@@ -1,0 +1,33 @@
+# ============================================================
+# Cloudflare Worker — CostumesPlanet.com sitemap proxy
+# ============================================================
+#
+# DEPLOY IN ONE COMMAND (from project root):
+#   npx wrangler deploy
+#
+# First-time setup:
+#   npx wrangler login          ← opens browser to authenticate
+#   npx wrangler deploy         ← uploads and activates the Worker
+#
+# Then add the route in Cloudflare dashboard:
+#   Workers & Pages → your Worker → Triggers → Routes → Add Route
+#   Pattern:  costumesplanet.com/*
+#   Zone:     costumesplanet.com
+#
+# ============================================================
+
+name       = "costumesplanet-sitemap"
+main       = "cloudflare-worker.js"
+account_id = ""          # ← paste your Cloudflare Account ID here
+                         #   (dash.cloudflare.com → top-right menu → Account ID)
+
+compatibility_date = "2024-09-23"
+
+# Optional: set the anon key as a secret instead of embedding it
+# Run:  npx wrangler secret put SUPABASE_ANON_KEY
+# Then paste the key when prompted.
+# The Worker already falls back to the hard-coded public key if this isn't set.
+
+[[routes]]
+pattern = "costumesplanet.com/*"
+zone_name = "costumesplanet.com"
