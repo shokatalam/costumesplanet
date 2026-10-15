@@ -384,17 +384,10 @@ const dates = [
   "2022-10-26",
 ];
 
-// Generate realistic dateModified values spread across recent months
-// so Google sees fresh, recently-updated content
-function generateDateModified(index: number, total: number): string {
-  // Spread updates across Jan-Feb 2026 to look natural
-  // Most recent posts updated most recently
-  const baseDate = new Date("2026-02-28");
-  const daysBack = Math.floor((index / total) * 55); // spread across ~55 days
-  const d = new Date(baseDate);
-  d.setDate(d.getDate() - daysBack);
-  return d.toISOString().split("T")[0];
-}
+// Real content-update dates (YYYY-MM-DD). Add a slug here ONLY when that
+// guide's content has actually been revised; otherwise dateModified equals
+// the publish date. Google penalises fabricated freshness signals.
+const contentUpdates: Record<string, string> = {};
 
 // Generate click-optimized SEO title for SERP (max ~60 chars)
 // Uses power words, brackets, authority signals for max CTR
@@ -452,7 +445,7 @@ export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
     category,
     tags: [category, "Costume Guide", "Halloween 2026", "Cosplay", "Amazon Verified", charName, "Expert Reviewed"],
     date: dates[i] || "2023-09-22",
-    dateModified: generateDateModified(i, slugs.length),
+    dateModified: contentUpdates[slug] || dates[i] || "2023-09-22",
     imageUrl: "", // resolved at runtime by CostumeImage component
     items,
     dressingGuide,

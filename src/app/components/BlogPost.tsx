@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "motion/react";
 import { getCostumeBySlug, getCostumesByCategory, CostumeBlog } from "../data/costumes";
 import { CostumeImage } from "./CostumeImage";
-import { getCostumeImage } from "../data/costumeImages";
 import { BlogCard } from "./BlogCard";
-import { StarRating, getRating } from "./StarRating";
+import { StarRating } from "./StarRating";
 import { getScrapedItems, ScrapedItem, onItemMapUpdate } from "../data/costumeLinks";
 import { getRedditQuestions, onRedditMapUpdate, RedditQuestion } from "../data/costumeReddit";
 import { Award, Shield, MessageCircle } from "lucide-react";
@@ -179,168 +178,7 @@ function SectionHeader({ icon: Icon, title, accent = false }: { icon: React.Elem
   );
 }
 
-// ── Structured Data ─
-function StructuredData({ costume }: { costume: CostumeBlog }) {
-  const imageUrl = getCostumeImage(costume.slug) || `https://costumesplanet.com/${costume.slug}/og-image.jpg`;
-  const pageUrl = `https://costumesplanet.com/${costume.slug}/`;
-  const { rating, reviewCount } = getRating(costume.slug);
-
-  const charName = costume.title
-    .replace(/\s*(Costume|Cosplay|Diy|Halloween|Outfits?|Dress|Suit|Plus Size|For Cosplay|Best|Sexy|Dance)\s*/gi, " ")
-    .trim()
-    .replace(/\s+/g, " ");
-
-  // 1) Article schema
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: costume.seoTitle,
-    name: costume.title,
-    description: costume.metaDescription,
-    datePublished: costume.date,
-    dateModified: costume.dateModified,
-    wordCount: 2200,
-    author: {
-      "@type": "Organization",
-      name: "CostumesPlanet",
-      url: "https://costumesplanet.com",
-      logo: { "@type": "ImageObject", url: "https://costumesplanet.com/logo.png", width: 200, height: 200 },
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "CostumesPlanet",
-      url: "https://costumesplanet.com",
-      logo: { "@type": "ImageObject", url: "https://costumesplanet.com/logo.png", width: 200, height: 200 },
-    },
-    image: {
-      "@type": "ImageObject",
-      url: imageUrl,
-      width: 1200,
-      height: 630,
-    },
-    mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
-    articleSection: costume.category,
-    keywords: costume.tags.join(", "),
-    inLanguage: "en-US",
-  };
-
-  // 2) Product schema with AggregateRating — THIS triggers Google star snippets
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: `${costume.title} - Complete Costume Set`,
-    description: costume.excerpt,
-    image: imageUrl,
-    brand: { "@type": "Brand", name: "CostumesPlanet" },
-    sku: costume.slug,
-    mpn: costume.slug,
-    category: `Clothing > Costumes > ${costume.category}`,
-    url: pageUrl,
-    offers: {
-      "@type": "AggregateOffer",
-      priceCurrency: "USD",
-      lowPrice: "12.99",
-      highPrice: "89.99",
-      offerCount: costume.items.length,
-      availability: "https://schema.org/InStock",
-      url: pageUrl,
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: rating.toFixed(1),
-      bestRating: "5",
-      worstRating: "1",
-      ratingCount: reviewCount,
-      reviewCount: reviewCount,
-    },
-    review: [
-      {
-        "@type": "Review",
-        author: { "@type": "Person", name: "CostumesPlanet Editorial Team" },
-        datePublished: costume.date,
-        reviewBody: `Comprehensive ${charName} costume guide covering ${costume.items.length} essential pieces. Our editorial team tested and verified each item for authenticity, comfort, and overall cosplay quality. Highly recommended for conventions and Halloween.`,
-        name: `${charName} Costume Review`,
-        reviewRating: {
-          "@type": "Rating",
-          ratingValue: rating.toFixed(1),
-          bestRating: "5",
-          worstRating: "1",
-        },
-      },
-      {
-        "@type": "Review",
-        author: { "@type": "Person", name: "Cosplay Community" },
-        datePublished: costume.date,
-        reviewBody: `This ${charName} costume set is one of the best we've seen. The guide makes it easy to put together an authentic look with ${costume.items.length} affordable items available on Amazon.`,
-        name: `Community Review: ${charName} Costume`,
-        reviewRating: {
-          "@type": "Rating",
-          ratingValue: "5",
-          bestRating: "5",
-          worstRating: "1",
-        },
-      },
-    ],
-  };
-
-  // 3) FAQPage schema
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: costume.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  };
-
-  // 4) HowTo schema for the dressing guide
-  const howToSchema = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: `How to Dress as ${charName} – Step by Step Guide`,
-    description: `Follow this ${costume.dressingGuide.length}-step guide to create the perfect ${charName} costume look.`,
-    image: imageUrl,
-    totalTime: "PT30M",
-    estimatedCost: { "@type": "MonetaryAmount", currency: "USD", value: "50" },
-    supply: costume.items.map((item) => ({ "@type": "HowToSupply", name: item.name })),
-    step: costume.dressingGuide.map((section, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: section.itemName,
-      text: section.steps.join(" "),
-      itemListElement: section.steps.map((step, j) => ({
-        "@type": "HowToDirection",
-        position: j + 1,
-        text: step,
-      })),
-    })),
-  };
-
-  // 5) BreadcrumbList schema
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://costumesplanet.com/" },
-      { "@type": "ListItem", position: 2, name: costume.category, item: `https://costumesplanet.com/category/${encodeURIComponent(costume.category)}/` },
-      { "@type": "ListItem", position: 3, name: costume.title, item: pageUrl },
-    ],
-  };
-
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-    </>
-  );
-}
+// Structured data (JSON-LD) is emitted at build time by scripts/prerender.mjs
 
 // ── Scroll Progress Bar ──
 function ScrollProgress() {
@@ -471,7 +309,6 @@ export function BlogPost() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif" }}>
-      <StructuredData costume={costume} />
       <ScrollProgress />
       <BackToTop />
 
