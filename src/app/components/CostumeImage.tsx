@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import {
   getCostumeImage,
   onImageMapUpdate,
+  refreshImageMap,
 } from "../data/costumeImages";
 
 interface CostumeImageProps {
@@ -31,6 +32,9 @@ export function CostumeImage({
   const [isVisible, setIsVisible] = useState(priority || loading === "eager");
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  // Guards the one-shot retry below so a broken slug can't loop forever.
+  const retriedRef = useRef(false);
 
   // Set up IntersectionObserver — re-observe whenever the ref element changes
   const setRef = useCallback(
@@ -69,7 +73,9 @@ export function CostumeImage({
     };
   }, []);
 
-  // Listen for image map updates
+  // Listen for image map updates — a fresh map clears the error.
+  // NOTE: do NOT reset retriedRef here. A refresh triggers this listener, so
+  // resetting it would let one permanently-broken image loop forever.
   useEffect(() => {
     const unsub = onImageMapUpdate(() => {
       const url = getCostumeImage(slug);
@@ -83,7 +89,18 @@ export function CostumeImage({
   useEffect(() => {
     setImageUrl(getCostumeImage(slug));
     setImgError(false);
+    retriedRef.current = false;
   }, [slug]);
+
+  // Storage URLs are signed and can expire. On the first failure, ask for a
+  // fresh map once instead of dropping straight to the placeholder forever.
+  const handleError = useCallback(() => {
+    setImgError(true);
+    if (!retriedRef.current) {
+      retriedRef.current = true;
+      void refreshImageMap();
+    }
+  }, []);
 
   const showImage = imageUrl && !imgError;
 
@@ -99,7 +116,7 @@ export function CostumeImage({
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             referrerPolicy="no-referrer"
-            onError={() => setImgError(true)}
+            onError={handleError}
           />
         ) : (
           <div className="w-full h-full bg-gray-100 animate-pulse" />
