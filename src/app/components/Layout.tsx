@@ -6,7 +6,6 @@ import { categories } from "../data/costumes";
 import { preloadImages } from "../data/costumeImages";
 import { loadItemMap } from "../data/costumeLinks";
 import { loadRedditMap } from "../data/costumeReddit";
-import { ScrapePanel } from "./ScrapePanel";
 
 const SiteLogo = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
   const isDark = variant === "dark";
@@ -258,8 +257,6 @@ export function Layout() {
         </Suspense>
       </main>
 
-      {/* Admin: Image Scraper */}
-      <ScrapePanel />
 
       {/* ═══ FOOTER ═══ */}
       <footer className="relative overflow-hidden bg-gradient-to-br from-[#070b2e] via-[#111b63] to-[#1a237e] text-white">
