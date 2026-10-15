@@ -18,6 +18,7 @@ export interface QuickFact {
 }
 
 export interface GuideContent {
+  characterName?: string; // used in section headings when the slug-derived name reads badly
   updated: string;
   seoTitle: string;
   metaDescription: string;
@@ -32,6 +33,8 @@ export interface GuideContent {
 }
 
 const amz = (asin: string) => `https://www.amazon.com/dp/${asin}?tag=cplanet0c-20`;
+// Use a search link when we can't confirm a specific product
+const search = (q: string) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}&tag=cplanet0c-20`;
 
 export const guides: Record<string, GuideContent> = {
   // ───────────────────────────────────────────────────────────────────────────
@@ -158,6 +161,7 @@ export const guides: Record<string, GuideContent> = {
 
   // ───────────────────────────────────────────────────────────────────────────
   "blues-brothers-costume": {
+    characterName: "Blues Brothers",
     updated: "2026-10-15",
     seoTitle: "Blues Brothers Costume: Jake and Elwood Outfit Guide",
     metaDescription:
@@ -268,6 +272,7 @@ export const guides: Record<string, GuideContent> = {
 
   // ───────────────────────────────────────────────────────────────────────────
   "scarface-costume": {
+    characterName: "Tony Montana",
     updated: "2026-10-15",
     seoTitle: "Scarface Costume: Tony Montana's White Suit & Other Looks",
     metaDescription:
@@ -318,6 +323,578 @@ export const guides: Record<string, GuideContent> = {
       { question: "Which Scarface outfit is easiest to put together?", answer: "The plaid suit with a red striped shirt is usually easier to buy as a set. A white suit is harder to find in a good fit and shows every mark, but it's the version most people recognise." },
       { question: "Can I bring a toy gun with a Scarface costume?", answer: "Check the event's rules first. Most conventions and many venues ban realistic replica firearms. If props are allowed, use an obviously fake toy with a bright orange tip." },
       { question: "Do I need prosthetics for Tony Montana's scar?", answer: "No. A thin line drawn on the cheek with brown-red eyeliner, with the edges blurred, reads clearly in photos. Slicked-back dark hair matters just as much for the look." },
+    ],
+  },
+  // ───────────────────────────────────────────────────────────────────────────
+  "dr-heinz-doofenshmirtz-costume": {
+    characterName: "Dr. Doofenshmirtz",
+    updated: "2026-10-15",
+    seoTitle: "Dr. Doofenshmirtz Costume: Phineas and Ferb Lab Coat Look",
+    metaDescription:
+      "How to dress as Dr. Heinz Doofenshmirtz from Phineas and Ferb: white lab coat, dark clothes, messy brown hair, a long nose and the hunch, plus a Perry the Platypus pairing.",
+    h1Title: "Dr. Heinz Doofenshmirtz Costume Guide (Phineas and Ferb)",
+    excerpt:
+      "A long white lab coat over dark clothes, messy brown hair, a long pointed nose and a hunched posture. Bring an \"-inator\" if you can.",
+    intro: [
+      "Dr. Heinz Doofenshmirtz is the evil-but-mostly-harmless scientist from Disney's Phineas and Ferb. His costume is cheap and simple: a long white lab coat buttoned over dark clothes, dark trousers, black shoes, messy brown hair and a long, pointed nose. Most of the character is in the posture: a hunch, slumped shoulders and an exaggerated accent.",
+      "The best upgrade is a prop. Doofenshmirtz builds a new \"-inator\" in almost every episode, so a cardboard ray gun or gadget with a hand-painted label, such as a \"Costume-inator\", makes the costume funnier and gives people something to ask about.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$45–$80" },
+      { label: "Best for", value: "Pairing with someone dressed as Perry the Platypus" },
+      { label: "What people recognise first", value: "Lab coat + long nose + hunch" },
+    ],
+    items: [
+      { name: "Long white lab coat", url: amz("B003P6WALS"), note: "Knee length or longer, worn fully buttoned. His coat is long and slightly too big." },
+      { name: "Messy brown wig", url: amz("B07V25MBX9"), note: "Short, brown and unkempt. Don't style it; flatten one side and ruffle the other." },
+      { name: "Long fake nose", url: amz("B004JTWRNQ"), note: "The nose is his defining feature. Blend the edge with a little foundation." },
+      { name: "Dark grey trousers", url: amz("B09V29QGS3"), note: "Plain and dark, so the white coat stands out." },
+      { name: "Plain black shoes", url: amz("B0B5HLH8RN"), note: "Simple black lace-ups or slip-ons." },
+    ],
+    dressingGuide: [
+      { itemName: "Clothes", steps: [
+        "Wear a dark top and the dark trousers as a base.",
+        "Put on the lab coat and button it all the way down.",
+      ] },
+      { itemName: "Face and hair", steps: [
+        "Attach the nose with spirit gum or the adhesive supplied, then blend the edge with foundation.",
+        "Put on the wig over a wig cap and mess it up with your fingers.",
+        "A little grey or brown eyeshadow under the eyes gives him his tired, under-slept look.",
+      ] },
+      { itemName: "Prop and performance", steps: [
+        "Make an \"-inator\" from a toy blaster or cardboard and label it.",
+        "Hunch forward, keep your shoulders slumped and announce your evil plans to anyone nearby.",
+      ] },
+    ],
+    about: [
+      "Doofenshmirtz is the main villain of Phineas and Ferb, which ran on Disney Channel from 2007 to 2015, with a revival announced in 2023. He is voiced by the show's co-creator, Dan Povenmire. In nearly every episode he runs Doofenshmirtz Evil Incorporated, builds an \"-inator\" to take over the Tri-State Area, and is defeated by his nemesis, Perry the Platypus, who is secretly Agent P.",
+      "Many of his schemes are explained by flashbacks to an absurdly bad childhood in the fictional country of Drusselstein, which is where his accent comes from. He is also a divorced father to his daughter Vanessa, which gives the character a softer side.",
+    ],
+    faqs: [
+      { question: "What does Dr. Doofenshmirtz wear?", answer: "A long white lab coat, worn buttoned, over dark clothes, with dark trousers and black shoes. His look is completed by messy brown hair, a long pointed nose and a hunched posture." },
+      { question: "What's the best couples costume with Doofenshmirtz?", answer: "Perry the Platypus: a teal top and trousers or onesie, an orange duck-bill mask or hat, and a brown fedora. If you have a group, add Phineas and Ferb." },
+      { question: "How do I make an -inator prop?", answer: "Start with a toy blaster, a spray bottle or a cardboard box, paint it silver or grey, add bottle caps as dials, and label it with a hand-written \"-inator\" name. A deliberately silly name works best." },
+      { question: "Do I need the accent?", answer: "No, but it helps. Doofenshmirtz speaks with an exaggerated, vaguely Central European accent from the fictional country of Drusselstein." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "tyler-durden-costume": {
+    updated: "2026-10-15",
+    seoTitle: "Tyler Durden Costume: Fight Club Red Jacket Outfit",
+    metaDescription:
+      "Dress as Tyler Durden from Fight Club: red leather jacket, loud printed shirt, red-tinted sunglasses, bruised makeup and a bar of soap, plus a Narrator pairing.",
+    h1Title: "Tyler Durden Costume Guide (Fight Club)",
+    excerpt:
+      "Red leather jacket, a loud printed shirt, red-tinted sunglasses and fake bruises. A bar of pink soap is the in-joke prop.",
+    intro: [
+      "Tyler Durden, played by Brad Pitt in David Fincher's Fight Club (1999), dresses like nobody else in the film. The look people recognise is a red leather jacket over a loud printed shirt, with red-tinted sunglasses, worn-in trousers, boots and a face covered in cuts and bruises.",
+      "Tyler's clothes are deliberately mismatched and secondhand-looking, so this is a good costume to put together from thrift shops. The details that make it read as Tyler rather than \"man in red jacket\" are the tinted sunglasses, the bruise makeup and a bar of pink soap, a nod to the Paper Street Soap Company.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy (moderate with good bruise makeup)" },
+      { label: "Rough budget", value: "$60–$120; less from thrift shops" },
+      { label: "Best for", value: "A pair, with a friend as the Narrator" },
+      { label: "What people recognise first", value: "Red leather jacket + tinted sunglasses" },
+    ],
+    items: [
+      { name: "Red leather jacket", url: search("men red leather jacket"), note: "The key piece. A slightly worn, dark red faux-leather jacket looks closer to the film than bright, shiny red." },
+      { name: "Loud printed shirt", url: amz("B00K2XPFEQ"), note: "Tyler's shirts have busy, clashing prints. The louder the better." },
+      { name: "Red-tinted sunglasses", url: amz("B07GP9L1G5"), note: "Small lenses with a red or amber tint." },
+      { name: "Work trousers", url: amz("B072NLJGB1"), note: "Worn-in and loose. Nothing about Tyler is tailored." },
+      { name: "Work boots", url: amz("B09HSNJ3J1"), note: "Scuffed is better than new." },
+      { name: "Prop cigarettes", url: amz("B014B20XEA"), note: "Optional. Use fake ones if you're indoors." },
+    ],
+    dressingGuide: [
+      { itemName: "Clothes", steps: [
+        "Wear the printed shirt open at the collar with the work trousers and boots.",
+        "Add the red leather jacket, unzipped.",
+      ] },
+      { itemName: "Bruises and cuts", steps: [
+        "Use a bruise wheel or purple, red and yellow eyeshadow. Dab colour around one eye, the cheekbone and the jaw, then blend the edges.",
+        "A small cut on the lip or eyebrow made with fake blood or red lip liner adds realism.",
+        "Set everything with powder so it doesn't transfer onto the jacket collar.",
+      ] },
+      { itemName: "Props", steps: [
+        "Carry a bar of pink soap, or wrap a bar in a hand-made \"Paper Street Soap Co.\" label.",
+        "Put the sunglasses on and keep them on.",
+      ] },
+    ],
+    about: [
+      "Fight Club is based on Chuck Palahniuk's 1996 novel and was directed by David Fincher, with Edward Norton as the unnamed Narrator and Brad Pitt as Tyler Durden, a soap salesman who starts an underground fight club with him. It underperformed at the box office in 1999 but became a cult film on home video.",
+      "Tyler's wardrobe was designed to look like it came from thrift shops and lost-and-found bins: clashing patterns, worn leather and odd colour combinations, in contrast to the Narrator's catalogue-furniture, office-worker life. That contrast is worth keeping if you go as a pair.",
+    ],
+    faqs: [
+      { question: "What does Tyler Durden wear in Fight Club?", answer: "His most recognisable look is a red leather jacket over a loud printed shirt, with red-tinted sunglasses, worn trousers and boots. He wears several other mismatched, thrift-store-style outfits through the film." },
+      { question: "What should my partner wear as the Narrator?", answer: "A plain office shirt and tie, slacks, and a bruised face, or a short-sleeved shirt with a loosened tie. The Narrator's look is deliberately bland next to Tyler's." },
+      { question: "How do I do realistic bruise makeup?", answer: "Layer purple and red first, then add yellow-green around the edges, as older bruises fade that way. Blend each layer with a sponge and set with powder. A cream bruise wheel from a costume shop makes this easier than eyeshadow." },
+      { question: "Why does a Tyler Durden costume include soap?", answer: "Tyler makes and sells soap in the film, through the Paper Street Soap Company. A pink bar of soap is a well-known reference for fans." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "diy-kim-possible-costume": {
+    updated: "2026-10-15",
+    seoTitle: "DIY Kim Possible Costume: Black Crop Top & Cargo Pants",
+    metaDescription:
+      "Make a Kim Possible mission costume: black crop top, olive cargo pants, brown utility belt, black gloves and long red hair, plus a Ron Stoppable and Rufus pairing.",
+    h1Title: "DIY Kim Possible Costume (Mission Outfit)",
+    excerpt:
+      "Black crop top, olive-green cargo pants, a brown belt, black gloves and long red hair. Many people already own half of it.",
+    intro: [
+      "Kim Possible's mission outfit is one of the easiest cartoon costumes to put together yourself: a black fitted crop top, olive or sage-green cargo pants, a brown utility belt, black gloves, black boots and long, straight red hair. If you already have cargo pants and a black top, you only need the hair and the accessories.",
+      "Hair is what makes it recognisably Kim. If you don't have long red hair, a straight auburn wig with a side part is worth the money. A toy phone or tablet painted as her \"Kimmunicator\" is a good extra.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$40–$90" },
+      { label: "Best for", value: "Pairing with Ron Stoppable (and a toy mole-rat)" },
+      { label: "What people recognise first", value: "Long red hair + black top + green cargo pants" },
+    ],
+    items: [
+      { name: "Black fitted crop top", url: search("women black fitted long sleeve crop top"), note: "Plain black and fitted. Wear high-waisted cargo pants if you'd rather show less midriff." },
+      { name: "Sage or olive green cargo pants", url: amz("B09BFF29D2"), note: "Loose, with side pockets. Match the green to the show's olive tone rather than a bright army green." },
+      { name: "Long straight red wig", url: amz("B0B4W214XW"), note: "Long, straight and deep orange-red with a side part." },
+      { name: "Brown utility belt", url: amz("B07C6WJKXH"), note: "A wide brown belt worn over the pants." },
+      { name: "Black gloves", url: amz("B077CNN97N"), note: "Short black gloves complete the mission look." },
+      { name: "Black lace-up boots", url: amz("B07PN6BPSZ"), note: "Comfortable black boots; you'll want to be able to run." },
+    ],
+    dressingGuide: [
+      { itemName: "Outfit", steps: [
+        "Put on the black crop top and cargo pants.",
+        "Add the brown belt over the pants, sitting on the hips.",
+        "Finish with boots and black gloves.",
+      ] },
+      { itemName: "Hair", steps: [
+        "Pin your hair flat under a wig cap and put on the wig.",
+        "Brush it straight with a side part, tucking one side behind the ear.",
+      ] },
+      { itemName: "Extras", steps: [
+        "Paint an old phone case or toy tablet blue and grey to make a Kimmunicator.",
+        "Practise her catchphrase: \"What's the sitch?\"",
+      ] },
+    ],
+    about: [
+      "Kim Possible ran on Disney Channel from 2002 to 2007. Kim, voiced by Christy Carlson Romano, is a high-school cheerleader who saves the world in her spare time with her best friend Ron Stoppable and his pet naked mole-rat, Rufus. Gadget support comes from 10-year-old genius Wade, and her main enemies are Dr. Drakken and Shego.",
+      "A live-action Disney Channel film, with Sadie Stanley as Kim, was released in 2019. The mission outfit described here is the one from the animated series, which is the version most people recognise.",
+    ],
+    faqs: [
+      { question: "What does Kim Possible wear on missions?", answer: "A black fitted crop top, olive or sage-green cargo pants, a brown belt, black gloves and black boots, with her long red hair loose." },
+      { question: "What should Ron Stoppable wear?", answer: "Ron's mission look is a black top with the same style of cargo pants, plus messy blond hair. Carry a pink toy mole-rat in your pocket as Rufus." },
+      { question: "Can I make a Kim Possible costume without a wig?", answer: "Yes if your hair is long; temporary red hair spray or a coloured hair wax can work for a night. A wig gets you closer to her exact shade." },
+      { question: "Is Shego a good group costume addition?", answer: "Yes. Shego wears a green and black split catsuit with long black hair, and Dr. Drakken has blue skin and wears a lab coat. Together with Kim and Ron, they make a recognisable group." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "shy-guy-costume": {
+    updated: "2026-10-15",
+    seoTitle: "DIY Shy Guy Costume: Red Hoodie Robe & White Mask",
+    metaDescription:
+      "Make a Shy Guy costume from the Mario games: an oversized red hoodie or robe, a white mask with black eyes and mouth, and blue shoes. Cheap, quick and easy to wear.",
+    h1Title: "DIY Shy Guy Costume (Super Mario)",
+    excerpt:
+      "An oversized red hoodie or robe, a white mask with two black oval eyes and an oval mouth, and blue shoes. That's all Shy Guy is.",
+    intro: [
+      "Shy Guy is one of the simplest Mario characters to make: a red robe with a hood, a white mask with two black oval eyes and an oval mouth, and blue shoes. Because his body is just a red hooded robe, an oversized red hoodie with matching red trousers gets you most of the way there.",
+      "The mask is the whole character. Masks sold as \"Shy Guy\" are available, but you can make one by painting a plain white full-face mask with black ovals. Wearing gloves and keeping all your skin covered helps sell the faceless, slightly eerie look.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$30–$60" },
+      { label: "Best for", value: "Mario group costumes; groups of Shy Guys are funny" },
+      { label: "What people recognise first", value: "The white mask with oval eyes" },
+    ],
+    items: [
+      { name: "Oversized red hoodie", url: amz("B00AWTWP6Q"), note: "Go two sizes up so it hangs like a robe. Pull the hood up over the mask's edges." },
+      { name: "White full-face mask", url: amz("B092VF6RM7"), note: "A plain white mask you can paint, or a ready-made Shy Guy mask. Check you can see and breathe comfortably." },
+      { name: "Red sweatpants", url: search("red sweatpants adult"), note: "Match the hoodie's red so the body reads as one robe." },
+      { name: "Blue shoes", url: search("blue canvas sneakers"), note: "Shy Guy's feet are blue. Plain canvas sneakers are fine." },
+      { name: "Gloves", url: amz("B07FLXK36N"), note: "Optional; covering your hands keeps the faceless effect." },
+    ],
+    dressingGuide: [
+      { itemName: "Mask (make the day before)", steps: [
+        "If your mask is plain, draw two tall ovals for eyes and one oval for the mouth with a pencil.",
+        "Paint them black with acrylic paint and let it dry overnight.",
+        "Check the eye holes line up with your eyes; you may need to enlarge them slightly and paint around them.",
+      ] },
+      { itemName: "Body", steps: [
+        "Wear the red trousers and the oversized red hoodie.",
+        "Put on the blue shoes and gloves.",
+        "Put on the mask, then pull the hood up so it frames the mask's edges.",
+      ] },
+    ],
+    about: [
+      "Shy Guys first appeared in the 1987 Japanese game Yume Kōjō: Doki Doki Panic, which Nintendo reworked into Super Mario Bros. 2 for Western audiences in 1988. They have since become one of the most common enemies and side characters in the Mario series, especially in Yoshi's Island, Mario Kart and Mario Party.",
+      "True to their name, Shy Guys never show their faces, and what lies under the mask is a running joke in the series. Several colours exist in the games, but the red robe is the standard one.",
+    ],
+    faqs: [
+      { question: "What colour are Shy Guy's shoes?", answer: "Blue. The standard Shy Guy has a red robe, a white mask and blue feet." },
+      { question: "How do I make a Shy Guy mask?", answer: "Paint two tall black ovals for the eyes and a smaller black oval for the mouth onto a plain white full-face mask with acrylic paint. Let it dry overnight before wearing." },
+      { question: "Is a Shy Guy costume comfortable for a long event?", answer: "The hoodie and sweatpants are very comfortable, but full-face masks get warm. Choose a mask with good ventilation and take it off between photos." },
+      { question: "What group costumes go with Shy Guy?", answer: "Shy Guys work well in any Mario group, with Mario, Luigi, Peach, Yoshi or Bowser, and a group of several Shy Guys in different colours is a costume in itself." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "stefan-salvatore-outfits": {
+    updated: "2026-10-15",
+    seoTitle: "Stefan Salvatore Outfits: The Vampire Diaries Costume",
+    metaDescription:
+      "How to dress like Stefan Salvatore from The Vampire Diaries: layered henleys and jackets, dark jeans, boots and his lapis lazuli daylight ring, plus Damon and Elena pairings.",
+    h1Title: "Stefan Salvatore Outfits and Costume Guide (The Vampire Diaries)",
+    excerpt:
+      "Stefan dresses in layers: a henley or T-shirt under a jacket, dark jeans and boots. The lapis lazuli daylight ring is the detail fans look for.",
+    intro: [
+      "Stefan Salvatore, played by Paul Wesley in The Vampire Diaries, has an understated style: a fitted henley or T-shirt, often layered under a shirt or jacket, dark jeans and boots. It's an outfit you can wear all day, which is why it's popular for fan events and everyday \"closet cosplay\".",
+      "The detail that turns it into Stefan rather than just a casual outfit is his daylight ring: a silver ring with a blue lapis lazuli stone that lets him walk in the sun. Add brown hair swept up at the front and a brooding expression.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$40–$100" },
+      { label: "Best for", value: "Fan events, or a group with Damon and Elena" },
+      { label: "What people recognise first", value: "The lapis lazuli daylight ring" },
+    ],
+    items: [
+      { name: "Fitted T-shirt or henley", url: amz("B09RVKQWXH"), note: "Muted colours: grey, navy, olive or charcoal." },
+      { name: "Dark jacket", url: amz("B00LQA5XYG"), note: "Stefan layers a jacket over his shirt in most episodes. Keep it simple and dark." },
+      { name: "Dark slim jeans", url: amz("B00N49FECS"), note: "Dark wash, straight or slim fit." },
+      { name: "Leather boots", url: amz("B000NXYYI8"), note: "Brown or black lace-up boots." },
+      { name: "Lapis lazuli ring", url: amz("B07QH5QJ8P"), note: "A silver band with a blue stone is the important part." },
+    ],
+    dressingGuide: [
+      { itemName: "Outfit", steps: [
+        "Start with the henley or T-shirt and dark jeans, tucked or untucked.",
+        "Layer the jacket over the top and add boots.",
+      ] },
+      { itemName: "Details", steps: [
+        "Put on the daylight ring.",
+        "Style your hair with a little product, pushed up and back at the front.",
+        "For a darker, \"Ripper\" Stefan look from later seasons, add a black jacket and a touch of fake blood at the corner of the mouth.",
+      ] },
+    ],
+    about: [
+      "The Vampire Diaries ran on The CW from 2009 to 2017 and is based on L. J. Smith's novel series. Stefan Salvatore is a centuries-old vampire who returns to his hometown of Mystic Falls, Virginia, and falls for Elena Gilbert (Nina Dobrev). His older brother, Damon (Ian Somerhalder), is his rival for much of the series.",
+      "Stefan is the more restrained of the two brothers, and his wardrobe reflects it: muted colours and simple layers, compared with Damon's all-black leather look. The vampires' daylight rings, set with lapis lazuli and made by a witch, protect them from the sun and appear throughout the series.",
+    ],
+    faqs: [
+      { question: "What kind of ring does Stefan Salvatore wear?", answer: "A silver daylight ring set with a blue lapis lazuli stone. In the show it was enchanted by a witch so he can walk in the sun." },
+      { question: "What's the difference between Stefan's and Damon's style?", answer: "Stefan wears muted colours in layers: henleys, shirts and jackets. Damon wears almost all black, usually with a black leather jacket. If you go as the brothers, keep that contrast." },
+      { question: "What should Elena wear in a group costume?", answer: "Long straight brown hair, a fitted top or tank, a jacket and jeans, and Elena's vervain necklace, a silver locket with a filigree design." },
+      { question: "Can I wear this outfit every day?", answer: "Yes. That's part of its appeal: it's normal clothing, and only the ring signals the character to fans." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "wendy-torrance-costume": {
+    updated: "2026-10-15",
+    seoTitle: "Wendy Torrance Costume: The Shining 1970s Look",
+    metaDescription:
+      "Dress as Wendy Torrance from Kubrick's The Shining: 1970s pinafore dress, flannel shirt, white tights, boots, long dark centre-parted hair and a toy baseball bat.",
+    h1Title: "Wendy Torrance Costume Guide (The Shining)",
+    excerpt:
+      "Wendy's look is late-1970s and homely: a pinafore or shirt dress, flannel layers, white tights, boots and long, straight, centre-parted dark hair. The bat is optional but iconic.",
+    intro: [
+      "Wendy Torrance, played by Shelley Duvall in Stanley Kubrick's The Shining (1980), dresses in plain, practical late-1970s clothes: pinafore and shirt dresses, flannel shirts, turtlenecks, white tights and boots. Her long, straight dark hair with a centre parting is a big part of the look.",
+      "The most famous image of Wendy is her backing up the stairs with a baseball bat, terrified. Carrying a toy bat makes the costume instantly recognisable, and it pairs perfectly with someone dressed as Jack Torrance, or with two friends as the Grady twins.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$50–$100" },
+      { label: "Best for", value: "A group with Jack Torrance and the Grady twins" },
+      { label: "What people recognise first", value: "Centre-parted long hair + toy bat" },
+    ],
+    items: [
+      { name: "1970s-style pinafore or line dress", url: amz("B07ZD8Q1V8"), note: "A plain, knee-length dress in an earthy colour. Think practical, not glamorous." },
+      { name: "Flannel shirt", url: amz("B0074MWEKQ"), note: "Wear it under the pinafore or on its own with a skirt." },
+      { name: "White opaque tights", url: amz("B079BTN4T3"), note: "A very 1970s detail that suits Wendy's wardrobe." },
+      { name: "Brown boots", url: amz("B07V4P42XV"), note: "Low-heeled and practical." },
+      { name: "Plastic baseball bat", url: amz("B000LID78S"), note: "Use a lightweight toy bat; real bats are banned at most events." },
+    ],
+    dressingGuide: [
+      { itemName: "Outfit", steps: [
+        "Put on the white tights first, then the flannel shirt and dress.",
+        "Add the boots.",
+      ] },
+      { itemName: "Hair and makeup", steps: [
+        "Part your hair, or a long straight dark wig, exactly in the centre and let it fall straight.",
+        "Keep makeup minimal. For the later scenes, add tear-streaked mascara and a pale, frightened look.",
+      ] },
+      { itemName: "Prop", steps: [
+        "Carry the toy bat in both hands, held up across your body as in the stairs scene.",
+      ] },
+    ],
+    about: [
+      "The Shining is Stanley Kubrick's 1980 adaptation of Stephen King's 1977 novel. Jack Torrance (Jack Nicholson) takes a winter caretaker job at the isolated Overlook Hotel, bringing his wife Wendy and their son Danny, and gradually loses his mind. The film's images, including the Grady twins, Room 237 and \"Here's Johnny!\", are among the best-known in horror.",
+      "Shelley Duvall's performance as Wendy was gruelling to film; Kubrick was known for shooting scenes, including the bat scene, many times over. Her portrayal has been widely reappraised as one of the film's strengths. Duvall died in 2024.",
+    ],
+    faqs: [
+      { question: "What does Wendy Torrance wear in The Shining?", answer: "Practical late-1970s clothes: pinafore and shirt dresses, flannel shirts, turtlenecks, white tights and boots. Her outfits change across the film, but the overall style stays plain and homely." },
+      { question: "What's the best group costume with Wendy?", answer: "Jack Torrance (a red jacket over a plaid or casual shirt, or a hotel-caretaker look, carrying a toy axe), Danny in a knitted jumper, and two people as the Grady twins in matching pale blue dresses." },
+      { question: "Can I carry a baseball bat to a party or convention?", answer: "Use a lightweight plastic toy bat, and check the event rules. Real bats are treated as weapons at most conventions." },
+      { question: "How should I do Wendy's hair?", answer: "Long, straight and dark with a sharp centre parting. If your hair isn't long enough, a long straight brown wig works well." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "jar-jar-binks-costume": {
+    updated: "2026-10-15",
+    seoTitle: "Jar Jar Binks Costume: Star Wars Gungan Outfit Guide",
+    metaDescription:
+      "How to dress as Jar Jar Binks from Star Wars: The Phantom Menace: a Gungan mask or headpiece with long ears, a tan vest, ragged trousers and orange-toned skin.",
+    h1Title: "Jar Jar Binks Costume Guide (Star Wars)",
+    excerpt:
+      "Jar Jar is hard to DIY because of his head. Buy a mask or headpiece with long ears, then build the rest from a vest, ragged trousers and orange-toned gloves.",
+    intro: [
+      "Jar Jar Binks, the Gungan from Star Wars: Episode I – The Phantom Menace (1999), is a fully computer-generated character, so there's no simple everyday-clothes version of him. The head, with its long floppy ears, eye stalks and duck-like snout, is what makes him recognisable, so most people buy a mask or full costume rather than making one.",
+      "If you build it yourself, put your effort and budget into the headpiece. For the body, a tan or brown vest, loose ragged trousers cut off below the knee and orange-toned gloves are enough. Jar Jar's clumsy, loose-limbed walk does the rest.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Moderate (unless you buy a full costume)" },
+      { label: "Rough budget", value: "$40–$120" },
+      { label: "Best for", value: "Star Wars group costumes and ironic party costumes" },
+      { label: "What people recognise first", value: "The long-eared Gungan head" },
+    ],
+    items: [
+      { name: "Jar Jar Binks mask or headpiece", url: search("Jar Jar Binks mask"), note: "The piece to spend money on. Check you can see through it and that the ears are long and floppy." },
+      { name: "Jar Jar Binks full costume", url: search("Jar Jar Binks costume adult"), note: "The easiest option if you'd rather not assemble the pieces." },
+      { name: "Tan or brown vest", url: search("brown suede vest men"), note: "Worn open over a long-sleeved top in a similar earthy tone." },
+      { name: "Ragged brown trousers", url: search("brown linen trousers men"), note: "Cut and fray the legs below the knee." },
+      { name: "Orange gloves", url: search("orange gloves costume"), note: "To match Jar Jar's skin tone if your arms and hands show." },
+    ],
+    dressingGuide: [
+      { itemName: "Body", steps: [
+        "Put on a long-sleeved top in a brown or tan tone, then the vest.",
+        "Wear the trousers with the frayed legs ending around the calf.",
+        "Go barefoot-looking with skin-tone or orange socks over shoes, or wear simple brown shoes.",
+      ] },
+      { itemName: "Head and hands", steps: [
+        "Put on the gloves before the mask, while you can still see properly.",
+        "Fit the mask so the ears hang evenly behind your shoulders.",
+      ] },
+      { itemName: "Performance", steps: [
+        "Jar Jar's movement is loose and clumsy. Flail your arms a little and refer to yourself as \"meesa\".",
+      ] },
+    ],
+    about: [
+      "Jar Jar Binks is a Gungan from the planet Naboo, introduced in The Phantom Menace (1999), where he joins Qui-Gon Jinn and Obi-Wan Kenobi. He returns as a senator's representative in Attack of the Clones (2002), where he unwittingly helps Palpatine gain emergency powers, and briefly in Revenge of the Sith (2005).",
+      "He was played through voice and motion capture by Ahmed Best, making him one of the first fully computer-generated main characters in a live-action film. The character was heavily criticised at the time, but has since been re-evaluated by many fans, and Best returned to Star Wars in 2023 as the Jedi Kelleran Beq in The Mandalorian.",
+    ],
+    faqs: [
+      { question: "What does Jar Jar Binks wear?", answer: "A tan or brown vest over a lighter top, loose ragged trousers that end below the knee, and a belt. His skin is orange-brown, and his head has long floppy ears, eye stalks and a duck-like snout." },
+      { question: "Is it better to buy or make a Jar Jar costume?", answer: "Buy at least the head. It's the hardest part to make well and the part people recognise. The clothes are easy to assemble yourself." },
+      { question: "Who played Jar Jar Binks?", answer: "Ahmed Best voiced and performed the character through motion capture in the prequel trilogy." },
+      { question: "What group costumes include Jar Jar?", answer: "A Phantom Menace group: Qui-Gon Jinn and Obi-Wan Kenobi in Jedi robes, Padmé Amidala or Queen Amidala, and young Anakin Skywalker." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "dexter-morgan-costume": {
+    updated: "2026-10-15",
+    seoTitle: "Dexter Morgan Costume: Kill Room Outfit & Miami Look",
+    metaDescription:
+      "Dress as Dexter Morgan from Dexter: the olive long-sleeve henley, cargo pants, gloves and apron of his kill outfit, or his short-sleeve Miami Metro work look.",
+    h1Title: "Dexter Morgan Costume Guide (Dexter)",
+    excerpt:
+      "Dexter's \"kill outfit\" is an olive long-sleeve henley, cargo pants, black gloves and a plastic apron. His day look is a short-sleeved patterned shirt.",
+    intro: [
+      "Dexter Morgan, played by Michael C. Hall in Showtime's Dexter, has two outfits people recognise. The first is his \"kill outfit\": a fitted olive or khaki long-sleeved henley, cargo pants, black gloves and, in the kill room, a plastic apron. The second is his daytime look as a blood-spatter analyst for Miami Metro: short-sleeved patterned button-up shirts and slacks.",
+      "The kill outfit is the one people expect at Halloween. Small details sell it: a few blood splatters, a roll of plastic wrap, or a wooden box of blood slides.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$50–$100" },
+      { label: "Best for", value: "Halloween; works solo" },
+      { label: "What people recognise first", value: "Olive henley + gloves + blood slides" },
+    ],
+    items: [
+      { name: "Olive long-sleeve henley", url: search("men olive long sleeve henley"), note: "Fitted, not baggy. This is the core of the kill outfit." },
+      { name: "Cargo pants", url: amz("B07F2KFQWB"), note: "Khaki or dark green, practical and plain." },
+      { name: "Black apron", url: amz("B086KR2MMP"), note: "For the kill-room version. A shiny plastic or rubber apron looks closest." },
+      { name: "Black gloves", url: amz("B0015DGC9Y"), note: "Thin black gloves, worn snug." },
+      { name: "Fake blood", url: amz("B009DKJPKY"), note: "A light spatter only; Dexter is meticulous and never messy." },
+    ],
+    dressingGuide: [
+      { itemName: "Kill outfit", steps: [
+        "Put on the henley, buttoned partway, and the cargo pants.",
+        "Add the gloves and the apron.",
+        "Flick a small amount of fake blood across the apron; keep the shirt mostly clean.",
+      ] },
+      { itemName: "Props", steps: [
+        "Make a blood-slide box from a small wooden box and glass microscope slides, each with a drop of red nail polish.",
+        "Carry a roll of plastic wrap. Skip realistic knives; most events ban them, and the slides are more recognisable anyway.",
+      ] },
+      { itemName: "Daytime Miami version", steps: [
+        "Wear a short-sleeved patterned button-up shirt, slacks and a lanyard ID badge reading \"Miami Metro Police Department\".",
+      ] },
+    ],
+    about: [
+      "Dexter ran on Showtime from 2006 to 2013, based on Jeff Lindsay's novel Darkly Dreaming Dexter. Dexter Morgan is a forensic blood-spatter analyst for the Miami Metro Police Department who is secretly a serial killer, targeting other killers according to a code taught to him by his adoptive father, Harry.",
+      "Michael C. Hall returned for the limited series Dexter: New Blood (2021). A prequel, Dexter: Original Sin (2024), stars Patrick Gibson as young Dexter, with Hall narrating, and Hall returned again in Dexter: Resurrection (2025).",
+    ],
+    faqs: [
+      { question: "What does Dexter wear when he kills?", answer: "A fitted olive or khaki long-sleeved henley, cargo pants and black gloves. In the kill room he adds a plastic apron, and the room is covered in plastic sheeting." },
+      { question: "What does Dexter wear to work?", answer: "Short-sleeved patterned button-up shirts with slacks, often in light colours to suit Miami." },
+      { question: "How do I make Dexter's blood slides?", answer: "Put a drop of red nail polish or fake blood on a few glass microscope slides, let them dry, and store them in a small wooden box. It's the most recognisable Dexter prop." },
+      { question: "Can I carry a knife prop?", answer: "Check the event rules first. Most conventions and many venues ban realistic blade props. The blood slides and plastic wrap identify the character without one." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "mr-smee-costume": {
+    characterName: "Mr. Smee",
+    updated: "2026-10-15",
+    seoTitle: "Mr. Smee Costume: Disney Peter Pan Pirate Guide",
+    metaDescription:
+      "How to dress as Mr. Smee from Disney's Peter Pan: blue and white striped shirt, red knit cap, round glasses, white sideburns, a red nose and rolled-up trousers.",
+    h1Title: "Mr. Smee Costume Guide (Peter Pan)",
+    excerpt:
+      "Blue and white striped shirt, red knit cap, small round glasses, white mutton-chop sideburns and a round red nose. Pair him with Captain Hook.",
+    intro: [
+      "Mr. Smee, Captain Hook's loyal and bumbling first mate in Disney's Peter Pan (1953), is a comfortable, easy costume: a blue and white striped shirt, a red knit cap, small round glasses, white mutton-chop sideburns and a round red nose, with trousers rolled up to the shin.",
+      "Smee is almost always worn as half of a pair with Captain Hook, and he is the easier half. If you're the one who doesn't want a big hat and a hook, this is your costume.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$40–$80" },
+      { label: "Best for", value: "A pair with Captain Hook, or a Peter Pan group" },
+      { label: "What people recognise first", value: "Red cap + striped shirt + round glasses" },
+    ],
+    items: [
+      { name: "Red knit cap", url: amz("B00NB95UWU"), note: "A slouchy red knit or stocking cap, worn back on the head." },
+      { name: "Blue and white striped shirt", url: amz("B0BL1KWV69"), note: "Horizontal stripes. A loose fit suits Smee's round shape." },
+      { name: "Small round glasses", url: amz("B002WIXLJ0"), note: "Small, round, wire-framed. Wear them low on the nose." },
+      { name: "White mutton-chop sideburns", url: amz("B004UNZMFQ"), note: "Smee is bald on top with white sideburns. These attach with adhesive." },
+      { name: "Round prosthetic nose", url: amz("B00ZIXK1XA"), note: "Optional; a little red blush on your own nose also works." },
+      { name: "Shorts or rolled trousers", url: amz("B09R2MQGPH"), note: "Rolled to the shin or knee." },
+    ],
+    dressingGuide: [
+      { itemName: "Clothes", steps: [
+        "Put on the striped shirt, loose and untucked or tucked into a wide belt.",
+        "Wear the trousers rolled up to the shin, with sandals or plain shoes.",
+      ] },
+      { itemName: "Face", steps: [
+        "Attach the sideburns in front of each ear with spirit gum.",
+        "Add the nose or redden your own with blush, then the glasses, low on the nose.",
+        "Put the red cap on last, pushed back.",
+      ] },
+      { itemName: "Pairing", steps: [
+        "If you're with Captain Hook, stay a step behind them and look worried. Smee spends most of the film fussing over Hook.",
+      ] },
+    ],
+    about: [
+      "Smee comes from J. M. Barrie's play Peter Pan (1904) and novel Peter and Wendy (1911). Disney's 1953 animated film gave him his best-known look: short, round, bald with white sideburns, in a striped shirt and red cap, endlessly devoted to Captain Hook and terrified of the crocodile.",
+      "Bob Hoskins played Smee in Steven Spielberg's Hook (1991), and Jim Gaffigan played him in Disney's live-action Peter Pan & Wendy (2023). The 1953 animated design remains the version most people picture.",
+    ],
+    faqs: [
+      { question: "What does Mr. Smee wear in Peter Pan?", answer: "In Disney's 1953 film: a blue and white striped shirt, a red knit cap, small round glasses and trousers rolled up below the knee. He has white sideburns and a round red nose." },
+      { question: "Does Mr. Smee have a beard?", answer: "No, he has white mutton-chop sideburns and is bald on top, which is why the red cap sits back on his head." },
+      { question: "What's the best pairing for Smee?", answer: "Captain Hook. For a bigger group, add Peter Pan, Tinker Bell, Wendy Darling, or someone dressed as the Tick-Tock Crocodile." },
+      { question: "Can a woman dress as Mr. Smee?", answer: "Yes. The costume doesn't depend on body type: the striped shirt, red cap and round glasses carry it on anyone." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "blade-costume": {
+    updated: "2026-10-15",
+    seoTitle: "Blade Costume: Wesley Snipes Vampire Hunter Outfit",
+    metaDescription:
+      "Dress as Blade from the Wesley Snipes films: long black leather coat, black tactical vest, black trousers, combat boots, wraparound sunglasses and a sword on your back.",
+    h1Title: "Blade Costume Guide (Marvel's Vampire Hunter)",
+    excerpt:
+      "All black: a long leather coat, a tactical vest, trousers and combat boots, with wraparound sunglasses and a sword in a back scabbard.",
+    intro: [
+      "Blade's look from the Wesley Snipes films (1998–2004) is all black and very recognisable: a long black leather coat over a black tactical vest, black trousers, combat boots, black gloves, dark wraparound sunglasses and a sword in a scabbard on his back.",
+      "It's a costume that rewards fit and texture. Matte black tactical pieces under a heavy coat look far better than a shiny one-piece costume, and the coat and sunglasses do most of the work. Bring a toy sword only if the event allows it.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Moderate" },
+      { label: "Rough budget", value: "$120–$250" },
+      { label: "Reference", value: "Blade (1998), Blade II (2002), Blade: Trinity (2004)" },
+      { label: "What people recognise first", value: "Long black coat + sunglasses + sword" },
+    ],
+    items: [
+      { name: "Long black leather coat", url: amz("B09C6KJ7V9"), note: "Ankle or calf length, faux leather is fine. This is the biggest visual piece." },
+      { name: "Black tactical vest", url: amz("B00IWHHPAQ"), note: "Fitted and matte, worn under the open coat." },
+      { name: "Black fitted trousers", url: amz("B002XFI8FY"), note: "Plain black, tucked into the boots." },
+      { name: "Wraparound sunglasses", url: amz("B0848VYXGN"), note: "Dark, narrow and wraparound." },
+      { name: "Black gloves", url: amz("B00164TI48"), note: "Leather or tactical gloves." },
+      { name: "Tactical leg strap", url: amz("B00865O2ZA"), note: "Optional; adds the armed, combat-ready look without a real weapon." },
+      { name: "Black combat boots", url: amz("B00HGYY6FS"), note: "Laced high." },
+      { name: "Prop sword with scabbard", url: amz("B079R9TYW5"), note: "Check event prop rules; many conventions require blunt, peace-bonded props." },
+    ],
+    dressingGuide: [
+      { itemName: "Base", steps: [
+        "Put on a black long-sleeved top and the black trousers, tucked into the combat boots.",
+        "Add the tactical vest and leg strap.",
+      ] },
+      { itemName: "Coat and accessories", steps: [
+        "Put on the long coat, leaving it open.",
+        "Sling the sword scabbard across your back so the handle sits over one shoulder.",
+        "Finish with gloves and sunglasses.",
+      ] },
+    ],
+    about: [
+      "Blade was created by writer Marv Wolfman and artist Gene Colan and first appeared in Marvel's The Tomb of Dracula #10 in 1973. He is a half-vampire \"daywalker\" who has vampire strength without their weaknesses and hunts vampires.",
+      "Wesley Snipes played him in Blade (1998), Blade II (2002) and Blade: Trinity (2004). The first film's success is often credited with showing studios that Marvel films could work, ahead of X-Men (2000). Snipes returned as Blade in Deadpool & Wolverine (2024), and Marvel Studios announced Mahershala Ali in the role in 2019.",
+    ],
+    faqs: [
+      { question: "What does Blade wear?", answer: "In the Wesley Snipes films: a long black leather coat over a black tactical vest, black trousers, combat boots, black gloves and dark wraparound sunglasses, with a sword carried on his back." },
+      { question: "Can I bring Blade's sword to a convention?", answer: "Check the rules first. Most conventions allow only lightweight, blunt prop swords, often peace-bonded at the entrance, and ban metal blades." },
+      { question: "Which Blade film's costume should I copy?", answer: "The look is similar across all three Snipes films. Blade (1998) is the best-known; Blade II adds more tactical gear." },
+      { question: "Is the coat necessary?", answer: "It's what makes the silhouette. Without it, the outfit can read as a generic tactical costume." },
+    ],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  "the-cousin-eddie-dickie-costume": {
+    characterName: "Cousin Eddie",
+    updated: "2026-10-15",
+    seoTitle: "Cousin Eddie Costume: Christmas Vacation Dickie & Sweater",
+    metaDescription:
+      "Dress as Cousin Eddie from National Lampoon's Christmas Vacation: white sweater over a black dickie, or the bathrobe, trapper hat and beer can from the RV scene.",
+    h1Title: "Cousin Eddie Costume Guide (Christmas Vacation)",
+    excerpt:
+      "Two classic looks: a white sweater over a black dickie with slacks and white shoes, or a bathrobe, fur trapper hat and beer from the RV scene.",
+    intro: [
+      "Cousin Eddie, played by Randy Quaid in National Lampoon's Christmas Vacation (1989), has two looks that people quote. The first is his dinner outfit: a white sweater with a black dickie (the fake turtleneck collar) underneath, light slacks and white shoes. The second is the RV scene: an old bathrobe, a fur trapper hat, black socks, slippers and a can of beer.",
+      "The dickie is the joke, so make sure it shows above the sweater's neckline. The bathrobe version is the more comfortable choice for a long holiday party; the sweater version looks better in photos with someone dressed as Clark Griswold.",
+    ],
+    quickFacts: [
+      { label: "Difficulty", value: "Easy" },
+      { label: "Rough budget", value: "$40–$80" },
+      { label: "Best for", value: "Christmas parties and ugly-sweater events" },
+      { label: "What people recognise first", value: "The black dickie under a white sweater" },
+    ],
+    items: [
+      { name: "Black dickie (fake turtleneck collar)", url: amz("B08HYP5B8N"), note: "The essential piece. It should be visible above the sweater's V-neck." },
+      { name: "White V-neck sweater", url: amz("B08C8HKC4Z"), note: "A V-neck shows the dickie best." },
+      { name: "Light cotton twill trousers", url: amz("B000RXXU48"), note: "Beige or light grey, a little too short and not quite fitted." },
+      { name: "White dress shoes", url: amz("B01H7S0T76"), note: "White shoes complete the dinner look." },
+      { name: "Fur trapper hat", url: amz("B07YLYS9JM"), note: "For the RV version, worn with the ear flaps down." },
+    ],
+    dressingGuide: [
+      { itemName: "Dinner version", steps: [
+        "Put on the dickie first and smooth the collar up around your neck.",
+        "Pull the white sweater over it so the black collar shows at the V.",
+        "Add the slacks and white shoes. A comb-over and a slightly too-pleased expression finish it.",
+      ] },
+      { itemName: "RV version", steps: [
+        "Wear an old bathrobe, loosely tied, over a white T-shirt.",
+        "Add the trapper hat with the flaps down, black socks pulled high, and slippers.",
+        "Carry a beer can, and a garden hose if you're committed.",
+      ] },
+    ],
+    about: [
+      "Cousin Eddie is Ellen Griswold's cousin by marriage, first seen in National Lampoon's Vacation (1983). In Christmas Vacation (1989) he arrives uninvited at Clark Griswold's house for the holidays in a rusty RV with his family and dog, Snots, and stays.",
+      "Randy Quaid's performance made Eddie the film's most-quoted character. Christmas Vacation, written by John Hughes and starring Chevy Chase as Clark, is now a holiday staple, which is why Eddie costumes show up at Christmas parties as much as at Halloween.",
+    ],
+    faqs: [
+      { question: "What is Cousin Eddie's dickie?", answer: "A dickie is a separate fake collar, in Eddie's case a black turtleneck collar, worn under a sweater to look like a full turtleneck. He wears it under a white sweater at Christmas dinner." },
+      { question: "What does Cousin Eddie wear in the RV scene?", answer: "A bathrobe, a fur trapper hat with the ear flaps down, black socks and slippers, holding a beer, while emptying the RV's waste tank into the storm drain." },
+      { question: "What should Clark Griswold wear with Eddie?", answer: "A Christmas sweater or a red and white plaid shirt, slacks and a Santa hat. For the lights scene, add a tool belt and a string of Christmas lights." },
+      { question: "Is Cousin Eddie a Halloween or Christmas costume?", answer: "Both. It's especially popular at Christmas parties and ugly-sweater events because Christmas Vacation is a holiday film." },
     ],
   },
 };

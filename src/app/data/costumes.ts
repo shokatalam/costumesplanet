@@ -37,6 +37,7 @@ export interface CostumeBlog {
   relatedSlugs: string[];
   // Present only on hand-written guides (see guides.ts)
   handwritten?: boolean;
+  characterName?: string;
   curatedItems?: ProductLink[];
   quickFacts?: QuickFact[];
 }
@@ -75,7 +76,7 @@ function categorize(slug: string): string {
   if (["steven-universe", "rose-quartz", "stevonnie", "opal", "lapis-lazuli", "amethyst", "sardonyx", "blue-diamond", "yellow-pearl", "buck-dewey", "pink-diamond"].some(k => s.includes(k))) return "Steven Universe";
   if (["peter-griffin", "brian-griffin", "chris-griffin", "meg-griffin", "stewie-griffin", "gene-belcher", "linda-belcher"].some(k => s.includes(k))) return "Animated TV";
   if (["ferris-bueller", "cameron-frye", "sloane-peterson", "scarface", "tyler-durden", "blues-brothers", "oliver-twist", "carl-spackler", "white-goodman", "cousin-eddie", "jack-torrance", "wendy-torrance", "jordan-belfort", "free-guy", "grady-twins", "mean-girls"].some(k => s.includes(k))) return "Movie Characters";
-  if (["blossom", "mojo-jojo", "miss-bellum", "professor-utonium", "timmy-turner", "dora", "dexter", "spinelli", "tj-detweiler", "gretchen", "ember-mclain", "jorgen", "ferb", "perry-the-platypus", "daniel-tiger", "dj-suki", "blippi", "kim-possible", "marvin-the-martian"].some(k => s.includes(k))) return "Cartoon Characters";
+  if (["blossom", "mojo-jojo", "miss-bellum", "professor-utonium", "timmy-turner", "dora", "dexters-laboratory", "spinelli", "tj-detweiler", "gretchen", "ember-mclain", "jorgen", "ferb", "doofenshmirtz", "perry-the-platypus", "daniel-tiger", "dj-suki", "blippi", "kim-possible", "marvin-the-martian"].some(k => s.includes(k))) return "Cartoon Characters";
   if (["darth-revan", "anakin", "cad-bane", "bo-katan", "jar-jar", "padme"].some(k => s.includes(k))) return "Star Wars";
   if (["he-man", "skeletor"].some(k => s.includes(k))) return "80s & Retro";
   if (["smurf", "smurfette", "gargamel", "brainy-smurf", "hackus-smurf", "vexy-smurf"].some(k => s.includes(k))) return "Smurfs";
@@ -435,6 +436,7 @@ export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
     introSection: guide.intro.join("\n\n"),
     faqs: guide.faqs,
     handwritten: true,
+    characterName: guide.characterName,
   };
 });
 

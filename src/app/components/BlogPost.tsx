@@ -289,7 +289,7 @@ export function BlogPost() {
     .filter((c) => c.slug !== costume.slug)
     .slice(0, 4);
 
-  const charName = costume.title
+  const charName = costume.characterName ?? costume.title
     .replace(/\s*(Costume|Cosplay|Diy|Halloween|Outfits?|Dress|Suit|Plus Size|For Cosplay|Best|Sexy|Dance)\s*/gi, " ")
     .trim()
     .replace(/\s+/g, " ");
