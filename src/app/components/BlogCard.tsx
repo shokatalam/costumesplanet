@@ -4,7 +4,6 @@ import { useRef, useState, startTransition } from "react";
 import { motion } from "motion/react";
 import { CostumeBlog } from "../data/costumes";
 import { CostumeImage } from "./CostumeImage";
-import { StarRatingCompact } from "./StarRating";
 
 interface BlogCardProps {
   costume: CostumeBlog;
@@ -66,7 +65,7 @@ export function BlogCard({ costume, featured = false }: BlogCardProps) {
           <div className={`relative overflow-hidden ${featured ? "aspect-[16/10]" : "aspect-[16/11]"}`}>
             <CostumeImage
               slug={costume.slug}
-              alt={`${costume.title} — expert-reviewed ${costume.category} costume guide with verified Amazon picks | CostumesPlanet`}
+              alt={`${costume.title}`}
               className="w-full h-full object-cover group-hover:scale-[1.12] transition-transform duration-[800ms] ease-out"
               priority={featured}
             />
@@ -112,7 +111,6 @@ export function BlogCard({ costume, featured = false }: BlogCardProps) {
             <p className="text-[13px] text-gray-400 line-clamp-2 mb-4 leading-relaxed">
               {costume.excerpt}
             </p>
-            <StarRatingCompact slug={costume.slug} className="mb-3" />
             <div className="flex items-center justify-between pt-3 border-t border-gray-50">
               <div className="flex items-center gap-1.5 text-xs text-gray-400">
                 <Calendar className="w-3 h-3" />

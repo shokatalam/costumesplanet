@@ -5,10 +5,10 @@ import { motion, AnimatePresence, useInView, useScroll, useTransform } from "mot
 import { getCostumeBySlug, getCostumesByCategory, CostumeBlog } from "../data/costumes";
 import { CostumeImage } from "./CostumeImage";
 import { BlogCard } from "./BlogCard";
-import { StarRating } from "./StarRating";
-import { getScrapedItems, ScrapedItem, onItemMapUpdate } from "../data/costumeLinks";
-import { getRedditQuestions, onRedditMapUpdate, RedditQuestion } from "../data/costumeReddit";
-import { Award, Shield, MessageCircle } from "lucide-react";
+import { getScrapedItems, onItemMapUpdate } from "../data/costumeLinks";
+import { tidyProductList, type ProductLink } from "../data/itemUtils";
+import { onRedditMapUpdate } from "../data/costumeReddit";
+import { Award } from "lucide-react";
 import { getExternalLinks, getInternalLinks, getIntroInternalLinks, getLinkTypeLabel, ExternalLink as ExtLink } from "../data/costumeAuthLinks";
 import { Globe, BookMarked, Link2 } from "lucide-react";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
@@ -243,7 +243,7 @@ export function BlogPost() {
   // Set SEO title + meta description
   useDocumentMeta({
     title: costume?.seoTitle || "Costume Guide | CostumesPlanet",
-    description: costume?.metaDescription || "Expert-verified costume guides with curated Amazon picks, step-by-step instructions, and cosplay community tips.",
+    description: costume?.metaDescription || "Costume and cosplay guides: the pieces you need and how to put them together.",
     canonical: costume ? `https://costumesplanet.com/${costume.slug}/` : undefined,
   });
 
@@ -295,10 +295,14 @@ export function BlogPost() {
     .replace(/\s+/g, " ");
 
   // Use scraped items if available, otherwise fall back to generated ones
+  // Hand-written guides have a curated list; otherwise use the products
+  // scraped from the original post, falling back to generated search links.
   const scrapedItems = getScrapedItems(costume.slug);
-  const displayItems: Array<{ name: string; url: string }> = scrapedItems
-    ? scrapedItems.map((si) => ({ name: cleanItemName(si.name), url: si.url }))
-    : costume.items.map((item) => ({ name: item.name, url: item.amazonUrl }));
+  const tidiedScraped = scrapedItems ? tidyProductList(scrapedItems) : [];
+  const displayItems: ProductLink[] = costume.curatedItems
+    ?? (tidiedScraped.length > 0
+      ? tidiedScraped
+      : costume.items.map((item) => ({ name: item.name, url: item.amazonUrl })));
 
   const itemCount = displayItems.length;
 
@@ -360,10 +364,6 @@ export function BlogPost() {
             transition={{ delay: 0.25 }}
             className="flex flex-wrap items-center gap-3"
           >
-            {/* Star Rating in hero */}
-            <div className="flex items-center gap-1.5 px-4 py-1.5 bg-[#FFB800]/10 backdrop-blur-sm rounded-full border border-[#FFB800]/20">
-              <StarRating size="sm" />
-            </div>
             <span className="px-4 py-1.5 bg-white/[0.07] backdrop-blur-sm text-white/70 rounded-full text-xs border border-white/[0.06]" style={{ fontWeight: 500 }}>
               {costume.category}
             </span>
@@ -393,7 +393,7 @@ export function BlogPost() {
                   <div className="bg-gray-50/50 p-4 md:p-6">
                     <CostumeImage
                       slug={costume.slug}
-                      alt={`${charName} costume set — expert-verified ${costume.category} cosplay guide with ${itemCount} screen-accurate pieces for Halloween and conventions`}
+                      alt={`${charName} costume`}
                       className="w-full aspect-[3/4] rounded-2xl bg-white"
                       objectFit="contain"
                       priority
@@ -401,9 +401,6 @@ export function BlogPost() {
                   </div>
                   <div className="p-4 md:p-6 pt-0">
                     <p className="text-center text-sm text-gray-400 mt-4">{charName} Costume</p>
-                    <div className="flex justify-center mt-3">
-                      <StarRating size="md" />
-                    </div>
                   </div>
                 </motion.div>
               </div>
@@ -431,6 +428,7 @@ export function BlogPost() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-gray-800 text-sm" style={{ fontWeight: 600 }}>{item.name}</p>
+                        {item.note && <p className="text-xs text-gray-500 mt-1 leading-relaxed">{item.note}</p>}
                         <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
                           <Check className="w-3 h-3 text-green-500" />
                           {/amazon\.com\/dp\/[A-Z0-9]{10}/i.test(item.url) ? "Direct Amazon Link" : "Amazon Search"}
@@ -470,10 +468,9 @@ export function BlogPost() {
                     </span>{" "}
                     to Life
                   </h2>
-                  <p className="text-gray-500 leading-[1.85] mb-5">{costume.introSection}</p>
-                  <p className="text-gray-500 leading-[1.85]">
-                    Whether you are attending a cosplay convention, a Halloween party, or simply want to showcase your creativity, this {charName} costume guide has everything you need.
-                  </p>
+                  {costume.introSection.split("\n\n").map((para, i) => (
+                    <p key={i} className="text-gray-500 leading-[1.85] mb-5">{para}</p>
+                  ))}
                   {/* Natural internal cross-links */}
                   {introLinks.length > 0 && (
                     <p className="text-gray-500 leading-[1.85] mt-5">
@@ -499,7 +496,7 @@ export function BlogPost() {
                     <div className="bg-gray-50/50 rounded-2xl p-3">
                       <CostumeImage
                         slug={costume.slug}
-                        alt={`How to dress as ${charName} — step-by-step ${costume.category} cosplay reference photo showing authentic costume details`}
+                        alt={`${charName} costume reference`}
                         className="w-full aspect-[4/5] rounded-xl bg-white"
                         objectFit="contain"
                       />
@@ -573,91 +570,38 @@ export function BlogPost() {
           <section className="mb-20">
             <SectionHeader icon={Users} title={`About ${charName}`} />
             <div className="bg-white rounded-3xl border border-gray-100 p-8 lg:p-10 shadow-sm">
-              <p className="text-gray-500 leading-[1.85] mb-5">{costume.aboutSection}</p>
-              <p className="text-gray-500 leading-[1.85]">
-                {charName} cosplay remains one of the most popular choices year after year. Whether you're a first-time cosplayer or a seasoned veteran, this guide will help you create an authentic, impressive look.
-              </p>
+              {costume.aboutSection.split("\n\n").map((para, i) => (
+                <p key={i} className="text-gray-500 leading-[1.85] mb-5 last:mb-0">{para}</p>
+              ))}
             </div>
           </section>
         </Reveal>
 
-        {/* ═══ EXPERT VERDICT ═══ */}
-        <Reveal>
-          <section className="mb-20">
-            <SectionHeader icon={Award} title="Expert Verdict" accent />
-            <div className="bg-gradient-to-br from-[#FF9900]/[0.04] via-[#ffb84d]/[0.03] to-transparent rounded-3xl border border-[#FF9900]/10 p-8 lg:p-10">
-              <div className="flex items-start gap-5 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FF9900] to-[#ffb84d] flex items-center justify-center shadow-lg shadow-[#FF9900]/20 shrink-0">
-                  <Shield className="w-7 h-7 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg text-gray-900 mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
-                    CostumesPlanet Editorial Assessment
-                  </h3>
-                  <p className="text-xs text-gray-400">Reviewed by our cosplay specialists &middot; Last verified {new Date(costume.dateModified).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</p>
-                </div>
+        {/* ═══ AT A GLANCE (hand-written guides only) ═══ */}
+        {costume.quickFacts && costume.quickFacts.length > 0 && (
+          <Reveal>
+            <section className="mb-20">
+              <SectionHeader icon={Award} title="At a Glance" accent />
+              <div className="grid sm:grid-cols-2 gap-4">
+                {costume.quickFacts.map((fact) => (
+                  <div key={fact.label} className="bg-white rounded-xl p-5 border border-gray-100">
+                    <p className="text-xs text-gray-400 mb-1">{fact.label}</p>
+                    <p className="text-gray-800" style={{ fontWeight: 600 }}>{fact.value}</p>
+                  </div>
+                ))}
               </div>
-              <div className="grid sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white rounded-xl p-4 text-center border border-gray-50">
-                  <p className="text-2xl text-[#FF9900] mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>4.8/5</p>
-                  <p className="text-xs text-gray-400">Accuracy Score</p>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center border border-gray-50">
-                  <p className="text-2xl text-[#1a237e] mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>${itemCount > 4 ? "45–90" : "30–65"}</p>
-                  <p className="text-xs text-gray-400">Est. Total Cost</p>
-                </div>
-                <div className="bg-white rounded-xl p-4 text-center border border-gray-50">
-                  <p className="text-2xl text-green-600 mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>{itemCount}</p>
-                  <p className="text-xs text-gray-400">Verified Items</p>
-                </div>
-              </div>
-              <p className="text-gray-500 leading-[1.85] text-sm">
-                <strong className="text-gray-700">Bottom line:</strong> This {charName} costume is an excellent choice for both Halloween and convention cosplay.
-                Our team verified every Amazon link for seller reliability (4+ stars, 100+ reviews minimum), and cross-referenced the item list
-                against character reference material and Reddit cosplay community recommendations. The {itemCount}-piece breakdown covers
-                everything from head to toe — no guesswork required. For best results, order 2–3 weeks before your event to allow time for
-                any sizing adjustments.
-              </p>
-            </div>
-          </section>
-        </Reveal>
+            </section>
+          </Reveal>
+        )}
 
         {/* ═══ FAQ ═══ */}
         <Reveal>
           <section className="mb-20">
             <SectionHeader icon={HelpCircle} title="Frequently Asked Questions" />
-            {/* Reddit community questions badge */}
-            {(() => {
-              const redditQs = getRedditQuestions(costume.slug);
-              return redditQs && redditQs.length > 0 ? (
-                <div className="flex items-center gap-2 mb-5 px-4 py-2 bg-orange-50 rounded-xl border border-orange-100 w-fit">
-                  <MessageCircle className="w-4 h-4 text-orange-500" />
-                  <span className="text-xs text-orange-700" style={{ fontWeight: 600 }}>
-                    Includes {redditQs.length} real questions from Reddit cosplay communities
-                  </span>
-                </div>
-              ) : null;
-            })()}
             <div className="space-y-3">
-              {/* Reddit-scraped questions first (if available) */}
-              {(() => {
-                const redditQs = getRedditQuestions(costume.slug);
-                if (!redditQs || redditQs.length === 0) return null;
-                return redditQs.map((rq, i) => (
-                  <FAQItem
-                    key={`reddit-${i}`}
-                    question={rq.question}
-                    answer={`Based on discussions in r/${rq.source}: This is a commonly asked question in the cosplay community. For the most accurate answer specific to ${charName}, check the product details and dressing guide sections above, and visit the r/${rq.source} subreddit for additional community advice.`}
-                    index={i}
-                  />
-                ));
-              })()}
-              {/* Generated expert FAQs */}
-              {costume.faqs.map((faq, i) => {
-                const redditQs = getRedditQuestions(costume.slug);
-                const offset = redditQs ? redditQs.length : 0;
-                return <FAQItem key={`faq-${i}`} question={faq.question} answer={faq.answer} index={i + offset} />;
-              })}
+              {costume.faqs.map((faq, i) => (
+                <FAQItem key={`faq-${i}`} question={faq.question} answer={faq.answer} index={i} />
+              ))}
             </div>
           </section>
         </Reveal>
@@ -675,7 +619,7 @@ export function BlogPost() {
                     <h3 className="text-sm text-gray-800" style={{ fontWeight: 700 }}>Reference Sources</h3>
                   </div>
                   <p className="text-xs text-gray-400 mb-4 leading-relaxed">
-                    Our editorial team cross-referenced these authoritative sources when creating this {charName} costume guide.
+                    Background on {charName} and the source material.
                   </p>
                   <div className="space-y-2.5">
                     {externalLinks.map((link, i) => (
@@ -716,7 +660,7 @@ export function BlogPost() {
                     <h3 className="text-sm text-gray-800" style={{ fontWeight: 700 }}>More Costume Guides</h3>
                   </div>
                   <p className="text-xs text-gray-400 mb-4 leading-relaxed">
-                    Explore more detailed costume breakdowns from CostumesPlanet's editorial library.
+                    More costume guides you might find useful.
                   </p>
                   <div className="space-y-2.5">
                     {internalLinks.map((iLink, i) => (
@@ -773,20 +717,4 @@ export function BlogPost() {
       </article>
     </div>
   );
-}
-
-// Helper function to clean item names
-function cleanItemName(name: string): string {
-  return name
-    .replace(/\s*See on\s*(Amazon)?\.?\s*$/i, "")
-    .replace(/\s*Buy on\s*(Amazon)?\.?\s*$/i, "")
-    .replace(/\s*View on\s*(Amazon)?\.?\s*$/i, "")
-    .replace(/\s*Check on\s*(Amazon)?\.?\s*$/i, "")
-    .replace(/\s*Shop on\s*(Amazon)?\.?\s*$/i, "")
-    .replace(/\s*Get on\s*(Amazon)?\.?\s*$/i, "")
-    .replace(/\s*on Amazon\s*$/i, "")
-    .replace(/\s*- Amazon\.com.*$/i, "")
-    .replace(/\s*\| Amazon\.com.*$/i, "")
-    .replace(/\s*:.*Amazon.*$/i, "")
-    .trim();
 }

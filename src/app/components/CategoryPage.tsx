@@ -61,8 +61,8 @@ export function CategoryPage() {
   const posts = getCostumesByCategory(decodedName);
 
   useDocumentMeta({
-    title: `Best ${decodedName} Costumes (2026) — ${posts.length} Expert-Verified Guides | CostumesPlanet`,
-    description: `Browse ${posts.length} expert-curated ${decodedName} costume guides. Each features verified Amazon picks, step-by-step dressing instructions, and cosplay community ratings. Updated for 2026.`,
+    title: `${decodedName} Costume Guides (${posts.length}) | CostumesPlanet`,
+    description: `Browse ${posts.length} ${decodedName} costume and cosplay guides with item lists, dressing steps and FAQs.`,
   });
 
   if (posts.length === 0) {

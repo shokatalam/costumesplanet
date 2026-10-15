@@ -37,10 +37,11 @@ const vite = await createServer({
   appType: "custom",
   optimizeDeps: { noDiscovery: true, include: [] },
 });
-let costumes, categories, getCostumesByCategory, getExternalLinks;
+let costumes, categories, getCostumesByCategory, getExternalLinks, tidyProductList;
 try {
   ({ costumes, categories, getCostumesByCategory } = await vite.ssrLoadModule("/src/app/data/costumes.ts"));
   ({ getExternalLinks } = await vite.ssrLoadModule("/src/app/data/costumeAuthLinks.ts"));
+  ({ tidyProductList } = await vite.ssrLoadModule("/src/app/data/itemUtils.ts"));
 } finally {
   await vite.close();
 }
@@ -132,11 +133,13 @@ const crumbs = (items) => ({
 const listOfCostumes = (list) =>
   `<ul>${list.map((c) => `<li><a href="/${c.slug}/">${esc(c.title)}</a> — ${esc(c.category)}</li>`).join("")}</ul>`;
 
-// Real product list for a slug (scraped from the original posts), else generated items
+// Same priority as BlogPost: curated list, then scraped products, then generated items
 function itemsFor(c) {
-  const scraped = itemMap[c.slug]?.items?.filter((i) => i?.name && /^https?:\/\//.test(i?.url || ""));
-  return scraped?.length ? scraped.map((i) => ({ name: i.name, url: i.url })) : c.items.map((i) => ({ name: i.name, url: i.amazonUrl }));
+  if (c.curatedItems) return c.curatedItems;
+  const scraped = tidyProductList(itemMap[c.slug]?.items || []);
+  return scraped.length ? scraped : c.items.map((i) => ({ name: i.name, url: i.amazonUrl }));
 }
+const paras = (text) => text.split("\n\n").map((p) => `<p>${esc(p)}</p>`).join("");
 
 let count = 0;
 
@@ -184,13 +187,14 @@ for (const c of costumes) {
   <h1>${esc(c.h1Title)}</h1>
   <p class="muted">Published <time datetime="${c.date}">${c.date}</time>${c.dateModified !== c.date ? ` · Updated <time datetime="${c.dateModified}">${c.dateModified}</time>` : ""}</p>
   ${image ? `<img src="${esc(image)}" alt="${esc(c.title)}" width="1200" height="630" loading="eager" />` : ""}
-  <p>${esc(c.introSection)}</p>
-  <h2>What you need for a ${esc(c.title)}</h2>
-  <ul>${items.map((it) => `<li><a href="${esc(it.url)}" rel="sponsored nofollow noopener" target="_blank">${esc(it.name)}</a></li>`).join("")}</ul>
+  ${paras(c.introSection)}
+  ${c.quickFacts?.length ? `<h2>At a glance</h2><ul>${c.quickFacts.map((f) => `<li><strong>${esc(f.label)}:</strong> ${esc(f.value)}</li>`).join("")}</ul>` : ""}
+  <h2>What you need</h2>
+  <ul>${items.map((it) => `<li><a href="${esc(it.url)}" rel="sponsored nofollow noopener" target="_blank">${esc(it.name)}</a>${it.note ? ` — ${esc(it.note)}` : ""}</li>`).join("")}</ul>
   <h2>How to put it together</h2>
   ${c.dressingGuide.map((d) => `<h3>${esc(d.itemName)}</h3><ol>${d.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>`).join("")}
   <h2>About the character</h2>
-  <p>${esc(c.aboutSection)}</p>
+  ${paras(c.aboutSection)}
   <h2>Frequently asked questions</h2>
   ${c.faqs.map((f) => `<h3>${esc(f.question)}</h3><p>${esc(f.answer)}</p>`).join("")}
   ${external.length ? `<h2>Further reading</h2><ul>${external.map((l) => `<li><a href="${esc(l.url)}" rel="noopener" target="_blank">${esc(l.label)}</a></li>`).join("")}</ul>` : ""}

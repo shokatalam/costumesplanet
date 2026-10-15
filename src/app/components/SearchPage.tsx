@@ -41,7 +41,7 @@ function useTypingPlaceholder(phrases: string[], speed = 80, pause = 2000) {
 export function SearchPage() {
   useDocumentMeta({
     title: "Search 195+ Costume Guides — Find Your Perfect Cosplay | CostumesPlanet",
-    description: "Search our library of 195+ expert-verified costume guides. Find detailed breakdowns, Amazon product links, and step-by-step dressing instructions for any character.",
+    description: "Search our library of 240+ costume guides. Find detailed breakdowns, Amazon product links, and step-by-step dressing instructions for any character.",
   });
 
   const [query, setQuery] = useState("");

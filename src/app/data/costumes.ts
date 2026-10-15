@@ -35,7 +35,14 @@ export interface CostumeBlog {
   introSection: string;
   faqs: FAQ[];
   relatedSlugs: string[];
+  // Present only on hand-written guides (see guides.ts)
+  handwritten?: boolean;
+  curatedItems?: ProductLink[];
+  quickFacts?: QuickFact[];
 }
+
+import { guides, type QuickFact } from "./guides";
+import type { ProductLink } from "./itemUtils";
 
 // Images are now sourced from costumeImages.ts (permanent WordPress URLs)
 
@@ -63,7 +70,7 @@ function categorize(slug: string): string {
   if (["jon-snow", "daenerys", "cersei", "arya-stark", "sansa-stark", "night-king", "jaime-lannister", "joffrey", "tyrion", "ned-stark", "khal-drogo", "melisandre", "ygritte", "gray-worm", "missandei", "direwolf"].some(k => s.includes(k))) return "Game of Thrones";
   if (["spider", "iron-man", "iron-spider", "captain-america", "thanos", "gamora", "hawkeye", "fat-thor", "homelander", "starlight", "yelena", "natasha", "daredevil", "zombie-spiderman", "deadshot", "deathstroke", "harley-quinn", "killer-croc", "captain-boomerang", "taskmaster", "ratcatcher", "blade", "deadpool", "captain-marvel", "emma-frost", "killer-frost", "nightwing", "a-train", "the-deep"].some(k => s.includes(k))) return "Marvel & DC";
   if (["tanjiro", "inosuke", "mitsuri", "giyu", "levi-ackerman", "manjiro", "chifuyu", "takemichi", "hinata-tachibana", "emporio"].some(k => s.includes(k))) return "Anime";
-  if (["zelda", "link-cosplay", "jinx", "tracer", "sombra", "brigitte", "ashe-costume", "lucio", "soldier-76", "reaper", "mccree", "grillmaster", "honeydew", "ahri", "miss-fortune", "katarina", "janna", "zoe-costume", "ezreal", "soraka", "akali", "xayah", "cal-kestis", "shy-guy", "linkle", "wild-card", "omega-fortnite", "midas-costume", "zoey-cosplay"].some(k => s.includes(k))) return "Gaming";
+  if (["cammy", "zelda", "link-cosplay", "jinx", "tracer", "sombra", "brigitte", "ashe-costume", "lucio", "soldier-76", "reaper", "mccree", "grillmaster", "honeydew", "ahri", "miss-fortune", "katarina", "janna", "zoe-costume", "ezreal", "soraka", "akali", "xayah", "cal-kestis", "shy-guy", "linkle", "wild-card", "omega-fortnite", "midas-costume", "zoey-cosplay"].some(k => s.includes(k))) return "Gaming";
   if (["peter-pan", "tinkerbell", "captain-hook", "wendy-darling", "mr-smee", "ariel", "aurora", "elena-avalor", "queen-miranda", "briar-rose", "prince-phillip", "be-our-guest", "alice-in-wonderland", "princess-isabel", "gru", "lucy-wilde", "moana"].some(k => s.includes(k))) return "Disney";
   if (["steven-universe", "rose-quartz", "stevonnie", "opal", "lapis-lazuli", "amethyst", "sardonyx", "blue-diamond", "yellow-pearl", "buck-dewey", "pink-diamond"].some(k => s.includes(k))) return "Steven Universe";
   if (["peter-griffin", "brian-griffin", "chris-griffin", "meg-griffin", "stewie-griffin", "gene-belcher", "linda-belcher"].some(k => s.includes(k))) return "Animated TV";
@@ -194,51 +201,35 @@ function generateDressingGuide(charName: string, items: CostumeItem[]): Dressing
 
 function generateAboutSection(charName: string, category: string): string {
   const categoryContext: Record<string, string> = {
-    "Game of Thrones": `${charName} is one of the most iconic characters from HBO's Game of Thrones, based on George R.R. Martin's "A Song of Ice and Fire" novels. The show's intricate costume design by Michele Clapton (who won three Emmy Awards for the series) means recreating ${charName}'s look requires attention to specific fabric textures, layering techniques, and era-appropriate accessories. According to cosplay forums and convention judges, screen-accurate GoT costumes consistently rank among the most impressive at events like Dragon Con, SDCC, and NYCC. Our editorial team has analyzed hundreds of reference screenshots and behind-the-scenes costume breakdowns to identify the exact pieces you need. This guide is based on patterns discussed in r/gameofthrones, r/cosplay, and expert costume maker tutorials.`,
-    "Marvel & DC": `${charName} is a cornerstone character in the superhero genre with a costume design that has evolved across decades of comics, animated series, and billion-dollar film franchises. The MCU and DCEU costume departments (led by designers like Alexandra Byrne and Lindy Hemming) have set the gold standard for superhero cosplay accuracy. Based on our analysis of cosplay competition winners at SDCC, C2E2, and PAX, ${charName} consistently ranks in the top tier of recreated costumes. We've cross-referenced fan discussions on r/cosplay, r/Marvel, and r/DCcomics to identify which costume elements matter most for recognition and which budget-friendly substitutes actually hold up at conventions.`,
-    "Anime": `${charName} is a standout character in the anime community, and cosplaying this character has been trending on r/cosplay, r/anime, and convention forums since the series gained international popularity. Anime cosplay demands precision — Japanese costume design often features unique silhouettes, bold color blocking, and accessories that don't exist in Western fashion. Our team has studied reference material from official character sheets, anime art books, and cosplay competition footage from events like Anime Expo, Comiket, and Katsucon. We've incorporated feedback from experienced cosplayers on Reddit who've built this costume and know which materials, wig styles, and construction techniques produce the most accurate results.`,
-    "Gaming": `${charName} is an iconic character whose in-game design has been meticulously documented by fan communities across r/cosplay, dedicated subreddits, and cosplay forums. Gaming cosplay presents unique challenges because the character designs often include exaggerated proportions, glowing elements, and weapon props that require creative real-world solutions. Our editorial team has analyzed high-resolution in-game renders, concept art, and cosplay competition entries from events like PAX, TwitchCon, and Gamescom to provide the most accurate costume breakdown available. We've also incorporated practical tips from Reddit threads where experienced cosplayers discuss material choices, LED integration, and prop construction.`,
-    "Disney": `${charName} is one of Disney's most beloved characters, and the costume design reflects the studio's legendary attention to detail. Disney cosplay has its own dedicated community across r/disneyland, r/cosplay, and theme park fan forums, with standards for accuracy that rival professional costume departments. Our team has studied official Disney Parks cast member costumes, theatrical production wardrobes, and animation reference frames to identify every design element. The fabric choices, color hex values, and accessory details in this guide are sourced from cosplay competition winners and Disney bounding communities on Reddit.`,
-    "Steven Universe": `${charName} is a beloved character from Rebecca Sugar's groundbreaking animated series Steven Universe, which has inspired one of the most creative cosplay communities online. The show's distinctive art style — with its gem-based color palettes and flowing silhouettes — presents unique cosplay challenges that are actively discussed on r/stevenuniverse and r/cosplay. Our editorial team has sourced fabric recommendations and construction techniques from award-winning cosplayers who specialize in SU characters, ensuring this guide reflects proven approaches rather than guesswork.`,
-    "Star Wars": `${charName} is an iconic character from the Star Wars universe, backed by the most detail-obsessed cosplay community in existence. Organizations like the 501st Legion, Rebel Legion, and Mandalorian Mercs maintain screen-accuracy standards that our editorial team has cross-referenced for this guide. Star Wars costume discussions on r/501st, r/StarWars, and the RPF (Replica Prop Forum) provide granular detail on every fabric, buckle, and weathering technique. We've distilled thousands of forum posts and build threads into the most actionable ${charName} costume guide available online.`,
+    "Game of Thrones": `${charName} is a character from HBO's Game of Thrones, adapted from George R.R. Martin's A Song of Ice and Fire novels. The show's costumes rely on layered, textured fabrics, furs and leather, so matte, natural-looking materials will get you closer than shiny costume satin.`,
+    "Marvel & DC": `${charName} comes from the Marvel and DC superhero universe, where costumes have changed across comics, animation and film. Pick one specific version (a particular film or comic run) and match it, rather than mixing details from several.`,
+    "Anime": `${charName} is an anime character. Anime designs use bold colour blocking and distinctive hairstyles, so the wig and the main colours usually matter more for recognition than fine fabric detail.`,
+    "Gaming": `${charName} is a video game character. Game designs often have exaggerated proportions and props, so it helps to decide early which in-game outfit or skin you're recreating.`,
+    "Disney": `${charName} is a Disney character. Disney designs are built on a few strong colours and one or two signature accessories, which is what most people recognise first.`,
+    "Steven Universe": `${charName} is a character from Rebecca Sugar's animated series Steven Universe. The show's flat colours and simple shapes make the colour palette and the character's gem the details to get right.`,
+    "Star Wars": `${charName} is from the Star Wars universe. Star Wars fans tend to know the costumes well, so it's worth checking reference images from the specific film or series your version comes from.`,
   };
 
-  return categoryContext[category] || `${charName} has become one of the most searched costume choices online, with active discussions across r/cosplay, r/halloween, and dedicated fan communities. Our editorial team at CostumesPlanet has analyzed reference images, behind-the-scenes costume breakdowns, and hundreds of Reddit threads to create the most comprehensive ${charName} costume guide available. We've identified the exact pieces that cosplay competition winners use, the budget alternatives that actually look good in person (not just in product photos), and the common mistakes that first-time builders make. This guide reflects hands-on cosplay community knowledge, not generic product descriptions.`;
+  return categoryContext[category] || `${charName} is a popular costume choice for Halloween and themed parties. The pieces below cover the main elements of the look; check reference images of the character to fine-tune colours and details.`;
 }
 
 function generateIntroSection(charName: string, title: string): string {
-  return `Our costume experts have researched and verified every item in this ${charName} guide against reference material, Reddit community feedback, and real cosplay competition results. Unlike generic costume roundups, we break down exactly which pieces create the most screen-accurate look at each price point — from budget-friendly ($30–$50) builds using everyday clothing to premium ($100–$250) cosplay-grade setups. Every Amazon link has been hand-picked for seller reliability, customer reviews, and product accuracy. Whether you're building your first cosplay or competing at a convention, this is the definitive ${charName} costume resource.`;
+  return `This guide lists the main pieces you need for a ${charName} costume, with links to examples on Amazon, and a simple order for putting it all on. Many of the basics may already be in your wardrobe; buy the distinctive pieces and improvise the rest.`;
 }
 
 function generateFAQs(charName: string, title: string, category: string): FAQ[] {
   return [
     {
       question: `What are the essential items for a ${charName} costume?`,
-      answer: `You need 4–6 key pieces: the signature top/shirt, matching bottom, character-specific accessories (wig, props, or armor), and appropriate footwear. See our verified Amazon product table above for the exact items. Budget around $40–$80 for a solid look.`,
-    },
-    {
-      question: `How much does a good ${charName} costume actually cost?`,
-      answer: `Budget build: $30–$50 using thrift store basics + Amazon accessories. Mid-range: $60–$120 with dedicated costume pieces. Competition-grade: $150–$300+ with screen-accurate materials. Best value tip: spend more on the ONE piece people notice most (usually the top/jacket) and save on the rest.`,
+      answer: `See the item list at the top of this page. Focus first on the one or two pieces that make ${charName} recognisable, usually the signature outfit piece and the hair or headwear, and use everyday clothes for the rest.`,
     },
     {
       question: `Is it better to buy or DIY a ${charName} costume?`,
-      answer: `Depends on your timeline. Buying is faster and costs $40–$100. DIY saves money ($15–$40 in materials) but takes 5–15 hours. Reddit's r/cosplay consensus: buy the base pieces, DIY the props and accessories. That combo gives the best results for the least effort.`,
+      answer: `Buying is faster if you're short on time. A DIY build using clothes you already own is usually cheaper. A common approach is to buy the distinctive pieces and assemble the basics yourself.`,
     },
     {
-      question: `Where do cosplayers recommend buying ${charName} costume pieces?`,
-      answer: `Amazon (fastest shipping, easy returns), Etsy (handmade/custom pieces), AliExpress (cheapest but 2–4 week shipping), and specialty cosplay shops like EZCosplay or CosplaySky for premium accuracy. Our Amazon links above are curated for verified sellers with 4+ star ratings.`,
-    },
-    {
-      question: `Will people actually recognize a ${charName} costume at a party?`,
-      answer: `Yes — ${charName} is one of the most recognizable characters in the ${category} fandom. At conventions, expect constant compliments and photo requests. At Halloween parties, recognition depends on your crowd, but the distinctive silhouette makes it identifiable even to casual fans.`,
-    },
-    {
-      question: `What's the most common mistake people make with ${charName} cosplay?`,
-      answer: `According to cosplay forums: wrong fabric texture (shiny when it should be matte, or vice versa), skipping the wig (hairstyle is 30% of character recognition), and cheap props that look plastic-y. Fix these three things and you'll outshine 90% of other ${charName} costumes.`,
-    },
-    {
-      question: `Can I wear this ${charName} costume to a convention all day?`,
-      answer: `Yes, if you plan for comfort. Wear breathable base layers underneath, break in shoes beforehand, and bring a small repair kit (safety pins, hot glue stick, bobby pins). Most convention-goers in ${charName} costumes report 6–8 hours of comfortable wear with short breaks.`,
+      question: `How far ahead should I order ${charName} costume pieces?`,
+      answer: `Two to three weeks before your event leaves time for delivery, sizing exchanges and any wig styling.`,
     },
   ];
 }
@@ -389,42 +380,13 @@ const dates = [
 // the publish date. Google penalises fabricated freshness signals.
 const contentUpdates: Record<string, string> = {};
 
-// Generate click-optimized SEO title for SERP (max ~60 chars)
-// Uses power words, brackets, authority signals for max CTR
-function generateSeoTitle(charName: string, category: string, itemCount: number): string {
-  const year = "2026";
-  const templates = [
-    `Best ${charName} Costume (${year}) — ${itemCount} Expert-Verified Picks`,
-    `${charName} Costume: #1 Rated Guide [${year}] | CostumesPlanet`,
-    `${charName} Costume DIY & Buy — Editor's Pick ${year}`,
-    `How to Dress as ${charName} — Verified ${year} Guide`,
-    `${charName} Costume Ideas — ${itemCount} Pro-Approved Picks (${year})`,
-    `${charName} Costume Guide — Cosplay Expert Breakdown ${year}`,
-    `${charName} Cosplay: ${itemCount} Must-Have Items [${year} Guide]`,
-  ];
-  const hash = charName.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  let tpl = templates[hash % templates.length];
-  // Append branding if space permits (keep under 60 chars)
-  if (!tpl.includes("CostumesPlanet") && tpl.length <= 42) {
-    tpl += " | CostumesPlanet";
-  }
-  return tpl.length > 62 ? tpl.slice(0, 59) + "..." : tpl;
+function generateSeoTitle(charName: string): string {
+  const tpl = `${charName} Costume: What to Wear & How to Put It Together`;
+  return tpl.length <= 60 ? tpl : `${charName} Costume Guide | CostumesPlanet`;
 }
 
-// Generate click-optimized meta description (max ~155 chars)
-// Includes star symbols, specific prices, convention names, and action verbs
-function generateMetaDescription(charName: string, category: string, itemCount: number): string {
-  const templates = [
-    `★ Expert-verified ${charName} costume guide with ${itemCount} curated Amazon items. Step-by-step instructions, budget breakdowns ($30–$90), and real cosplayer tips.`,
-    `Create the perfect ${charName} look — ${itemCount} editor-picked Amazon pieces, Reddit-sourced tips, and pro dressing guide. Free shipping eligible on most items.`,
-    `The #1 rated ${charName} costume breakdown for ${category} fans. ${itemCount} hand-picked items with editorial accuracy scores and real cosplayer-approved picks.`,
-    `Build an authentic ${charName} costume: ${itemCount} verified Amazon pieces, step-by-step guide, 7 expert FAQs, and a cosplay accuracy rating. Updated 2026.`,
-    `${charName} costume made easy — ${itemCount} verified items, expert dressing guide, community-tested tips. Trusted by cosplayers at SDCC, Dragon Con & Comic-Con.`,
-    `Shop the exact ${charName} costume pieces used by award-winning cosplayers. ${itemCount} Amazon-verified items with real reviews. Complete 2026 guide inside.`,
-  ];
-  const hash = charName.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const tpl = templates[hash % templates.length];
-  return tpl.length > 160 ? tpl.slice(0, 157) + "..." : tpl;
+function generateMetaDescription(charName: string, itemCount: number): string {
+  return `How to put together a ${charName} costume: the ${itemCount} main pieces you need, links to examples, and a simple step-by-step dressing order.`;
 }
 
 export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
@@ -434,18 +396,20 @@ export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
   const items = generateItems(charName, slug);
   const dressingGuide = generateDressingGuide(charName, items);
   const itemCount = items.length;
+  const date = dates[i] || "2023-09-22";
+  const guide = guides[slug];
 
-  return {
+  const base: CostumeBlog = {
     slug,
     title,
-    seoTitle: generateSeoTitle(charName, category, itemCount),
-    h1Title: `${charName} Costume Guide — ${itemCount} Expert-Verified Pieces for Screen-Accurate ${category} Cosplay`,
-    excerpt: `The definitive ${charName} costume guide with ${itemCount} hand-picked Amazon items, step-by-step dressing instructions, expert accuracy scores, and Reddit community tips. Updated for 2026.`,
-    metaDescription: generateMetaDescription(charName, category, itemCount),
+    seoTitle: generateSeoTitle(charName),
+    h1Title: `${charName} Costume Guide`,
+    excerpt: `The main pieces for a ${charName} costume and how to put them together.`,
+    metaDescription: generateMetaDescription(charName, itemCount),
     category,
-    tags: [category, "Costume Guide", "Halloween 2026", "Cosplay", "Amazon Verified", charName, "Expert Reviewed"],
-    date: dates[i] || "2023-09-22",
-    dateModified: contentUpdates[slug] || dates[i] || "2023-09-22",
+    tags: [category, "Costume Guide", "Cosplay", charName],
+    date,
+    dateModified: contentUpdates[slug] || date,
     imageUrl: "", // resolved at runtime by CostumeImage component
     items,
     dressingGuide,
@@ -453,6 +417,24 @@ export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
     introSection: generateIntroSection(charName, title),
     faqs: generateFAQs(charName, title, category),
     relatedSlugs: [],
+  };
+
+  if (!guide) return base;
+  return {
+    ...base,
+    seoTitle: guide.seoTitle,
+    h1Title: guide.h1Title,
+    excerpt: guide.excerpt,
+    metaDescription: guide.metaDescription,
+    dateModified: guide.updated,
+    items: guide.items.map((it) => ({ name: it.name, amazonUrl: it.url })),
+    curatedItems: guide.items,
+    quickFacts: guide.quickFacts,
+    dressingGuide: guide.dressingGuide,
+    aboutSection: guide.about.join("\n\n"),
+    introSection: guide.intro.join("\n\n"),
+    faqs: guide.faqs,
+    handwritten: true,
   };
 });
 

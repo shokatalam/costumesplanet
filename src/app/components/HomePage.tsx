@@ -127,8 +127,8 @@ function TrendingCarousel() {
 
 export function HomePage() {
   useDocumentMeta({
-    title: "CostumesPlanet — #1 Expert-Rated Costume & Cosplay Guide Hub (2026)",
-    description: "195+ expert-verified costume guides with curated Amazon picks, step-by-step dressing instructions, and community-sourced cosplay tips. Trusted by 50K+ cosplayers worldwide.",
+    title: "CostumesPlanet — Costume & Cosplay Guides for Every Character",
+    description: "Costume and cosplay guides for 240+ characters, organised by franchise: Marvel & DC, Game of Thrones, Star Wars, Disney, anime, gaming and more.",
   });
 
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);

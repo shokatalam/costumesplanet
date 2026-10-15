@@ -5,9 +5,9 @@ import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 export function AboutPage() {
   useDocumentMeta({
-    title: "About Us — CostumesPlanet.com | Expert Costume Guides Since 2022",
+    title: "About Us — CostumesPlanet.com",
     description:
-      "Learn about CostumesPlanet.com — the trusted destination for expert-verified costume guides, curated Amazon picks, and step-by-step cosplay instructions for 200+ characters.",
+      "About CostumesPlanet.com: what our costume guides cover, how they are put together, and how the site is funded.",
   });
 
   return (
@@ -45,7 +45,7 @@ export function AboutPage() {
             Our Mission
           </h2>
           <p className="text-gray-600 leading-relaxed mb-4">
-            CostumesPlanet.com was created with one goal: to make costume-building easy, accessible, and fun for everyone. Whether you're preparing for Halloween, a comic convention, a themed party, or just want to cosplay your favorite character, we provide detailed, expert-verified guides that walk you through every step.
+            CostumesPlanet.com was created with one goal: to make costume-building easy, accessible, and fun for everyone. Whether you're preparing for Halloween, a comic convention, a themed party, or just want to cosplay your favorite character, we put together guides that list the pieces you need and how to wear them.
           </p>
           <p className="text-gray-600 leading-relaxed">
             Each of our 200+ costume guides is carefully curated with real Amazon product picks, step-by-step dressing instructions, and community tips sourced from platforms like Reddit and cosplay forums. We believe everyone deserves to feel amazing in their costume, regardless of budget or experience level.
@@ -55,7 +55,7 @@ export function AboutPage() {
         {/* Values */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           {[
-            { icon: Shield, title: "Expert-Verified", desc: "Every costume guide is researched and verified by our editorial team with real product testing and community feedback." },
+            { icon: Shield, title: "Honest Recommendations", desc: "We link to products as examples of each piece, and we say so when we haven't tried something ourselves. We earn a commission on Amazon purchases." },
             { icon: Heart, title: "Passion-Driven", desc: "We're cosplayers ourselves. We understand what makes a great costume and we share that knowledge freely." },
             { icon: Users, title: "Community-Sourced", desc: "Tips and tricks from Reddit, cosplay forums, and real convention-goers make our guides practical and authentic." },
             { icon: Star, title: "Always Updated", desc: "We regularly update product links, add new guides, and refresh our recommendations to keep everything current." },
@@ -85,7 +85,7 @@ export function AboutPage() {
               { icon: BookOpen, text: "200+ detailed costume guides covering Marvel, DC, Disney, anime, gaming, and more" },
               { icon: ShoppingBag, text: "Curated Amazon product picks with real prices and direct purchase links" },
               { icon: Star, text: "Interactive Costume Builder tool to create custom costume recipes with drag-and-drop" },
-              { icon: Users, text: "Community-sourced tips, FAQs, and cosplay accuracy ratings" },
+              { icon: Users, text: "Practical tips and FAQs for each costume" },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-[#FF9900]/10 flex items-center justify-center flex-shrink-0 mt-0.5">

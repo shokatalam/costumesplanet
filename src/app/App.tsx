@@ -4,7 +4,7 @@ import { router } from "./routes";
 
 export default function App() {
   useEffect(() => {
-    document.title = "CostumesPlanet — #1 Costume & Cosplay Guide Directory";
+    document.title = "CostumesPlanet — Costume & Cosplay Guides for Every Character";
   }, []);
   return <RouterProvider router={router} />;
 }

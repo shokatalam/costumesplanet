@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
-const DEFAULT_TITLE = "CostumesPlanet — #1 Costume & Cosplay Guide Directory";
-const DEFAULT_DESC = "Expert-verified costume guides with curated Amazon picks, step-by-step instructions, and cosplay community tips.";
+const DEFAULT_TITLE = "CostumesPlanet — Costume & Cosplay Guides for Every Character";
+const DEFAULT_DESC = "Costume and cosplay guides for film, TV, anime and gaming characters: the pieces you need and how to put them together.";
 
 /**
  * Sets document.title, meta description, and Open Graph tags for SEO.

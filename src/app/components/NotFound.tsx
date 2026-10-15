@@ -6,7 +6,7 @@ import { useDocumentMeta } from "../hooks/useDocumentMeta";
 export function NotFound() {
   useDocumentMeta({
     title: "Page Not Found — CostumesPlanet.com",
-    description: "The page you're looking for doesn't exist. Browse 195+ expert-verified costume guides at CostumesPlanet.com.",
+    description: "The page you're looking for doesn't exist. Browse our costume guides at CostumesPlanet.com.",
   });
 
   return (

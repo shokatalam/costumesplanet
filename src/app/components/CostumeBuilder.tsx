@@ -1018,9 +1018,9 @@ export function CostumeBuilder() {
               </p>
 
               <div className="mt-10 text-center pb-8">
-                <p className="text-white/25 text-sm mb-3">Want a detailed expert guide for this costume?</p>
+                <p className="text-white/25 text-sm mb-3">Want a detailed guide for this costume?</p>
                 <Link to="/search" className="inline-flex items-center gap-2 px-6 py-3 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] rounded-xl text-white/70 hover:text-white text-sm transition-all" style={{ fontWeight: 500 }}>
-                  <Search className="w-4 h-4" /> Search 195+ Expert Guides <ArrowRight className="w-4 h-4" />
+                  <Search className="w-4 h-4" /> Search 240+ Costume Guides <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
             </motion.div>

@@ -53,7 +53,7 @@ function CategoryCard({ cat, index }: { cat: string; index: number }) {
               <div key={c.slug} className="flex-1 overflow-hidden relative">
                 <CostumeImage
                   slug={c.slug}
-                  alt={`${c.title} — browse ${cat} costume guides with expert-verified Amazon picks at CostumesPlanet`}
+                  alt={`${c.title} — browse ${cat} costume guides at CostumesPlanet`}
                   className="w-full h-full object-cover group-hover:scale-[1.15] transition-transform duration-700 ease-out"
                 />
                 {j < preview.length - 1 && (
@@ -102,8 +102,8 @@ function CategoryCard({ cat, index }: { cat: string; index: number }) {
 
 export function CategoriesPage() {
   useDocumentMeta({
-    title: "All Costume Categories (2026) — 12 Expert-Curated Collections | CostumesPlanet",
-    description: "Browse 12 expert-curated costume categories including Marvel & DC, Game of Thrones, Star Wars, Disney, Anime, and more. 195+ verified guides with Amazon links.",
+    title: "All Costume Categories | CostumesPlanet",
+    description: "Browse costume guides by category: Marvel & DC, Game of Thrones, Star Wars, Disney, anime, gaming and more.",
   });
 
   return (
