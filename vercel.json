@@ -20,5 +20,97 @@
       ]
     }
   ],
-  "trailingSlash": true
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/category/game-of-thrones-costumes/:rest*",
+      "destination": "/category/Game%20of%20Thrones/",
+      "permanent": true
+    },
+    {
+      "source": "/category/game-of-thrones/:rest*",
+      "destination": "/category/Game%20of%20Thrones/",
+      "permanent": true
+    },
+    {
+      "source": "/category/steven-universe/:rest*",
+      "destination": "/category/Steven%20Universe/",
+      "permanent": true
+    },
+    {
+      "source": "/category/marvel-costumes/:rest*",
+      "destination": "/category/Marvel%20%26%20DC/",
+      "permanent": true
+    },
+    {
+      "source": "/category/marvel/:rest*",
+      "destination": "/category/Marvel%20%26%20DC/",
+      "permanent": true
+    },
+    {
+      "source": "/category/dc/:rest*",
+      "destination": "/category/Marvel%20%26%20DC/",
+      "permanent": true
+    },
+    {
+      "source": "/category/star-wars-costumes/:rest*",
+      "destination": "/category/Star%20Wars/",
+      "permanent": true
+    },
+    {
+      "source": "/category/star-wars/:rest*",
+      "destination": "/category/Star%20Wars/",
+      "permanent": true
+    },
+    {
+      "source": "/category/league-of-legends/:rest*",
+      "destination": "/category/Gaming/",
+      "permanent": true
+    },
+    {
+      "source": "/category/animated-tv/:rest*",
+      "destination": "/category/Animated%20TV/",
+      "permanent": true
+    },
+    {
+      "source": "/category/movie-characters/:rest*",
+      "destination": "/category/Movie%20Characters/",
+      "permanent": true
+    },
+    {
+      "source": "/category/cartoon-characters/:rest*",
+      "destination": "/category/Cartoon%20Characters/",
+      "permanent": true
+    },
+    {
+      "source": "/category/pop-culture/:rest*",
+      "destination": "/category/Pop%20Culture/",
+      "permanent": true
+    },
+    {
+      "source": "/category/diy-dance/:rest*",
+      "destination": "/category/DIY%20%26%20Dance/",
+      "permanent": true
+    },
+    {
+      "source": "/category/halloween/:rest*",
+      "destination": "/category/Pop%20Culture/",
+      "permanent": true
+    },
+    {
+      "source": "/category/80s-retro/:rest*",
+      "destination": "/category/80s%20%26%20Retro/",
+      "permanent": true
+    },
+    {
+      "source": "/category/classic-tv-film/:rest*",
+      "destination": "/category/Classic%20TV%20%26%20Film/",
+      "permanent": true
+    },
+    {
+      "source": "/page/:n",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
 }
