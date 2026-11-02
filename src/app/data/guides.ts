@@ -11,6 +11,7 @@
 
 import type { FAQ, DressingStep } from "./costumes";
 import type { ProductLink } from "./itemUtils";
+import { guidesBatch2 } from "./guides-batch-2026-11";
 
 export interface QuickFact {
   label: string;
@@ -36,7 +37,7 @@ const amz = (asin: string) => `https://www.amazon.com/dp/${asin}?tag=cplanet0c-2
 // Use a search link when we can't confirm a specific product
 const search = (q: string) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}&tag=cplanet0c-20`;
 
-export const guides: Record<string, GuideContent> = {
+const guidesBatch1: Record<string, GuideContent> = {
   // ───────────────────────────────────────────────────────────────────────────
   "best-cammy-costume": {
     updated: "2026-10-15",
@@ -898,3 +899,6 @@ export const guides: Record<string, GuideContent> = {
     ],
   },
 };
+
+// All hand-written guides, keyed by slug. Later batches live in their own files.
+export const guides: Record<string, GuideContent> = { ...guidesBatch1, ...guidesBatch2 };
