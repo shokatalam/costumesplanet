@@ -12,6 +12,7 @@
 import type { FAQ, DressingStep } from "./costumes";
 import type { ProductLink } from "./itemUtils";
 import { guidesBatch2 } from "./guides-batch-2026-11";
+import { guidesBatch3 } from "./guides-batch-2026-11b";
 
 export interface QuickFact {
   label: string;
@@ -901,4 +902,4 @@ const guidesBatch1: Record<string, GuideContent> = {
 };
 
 // All hand-written guides, keyed by slug. Later batches live in their own files.
-export const guides: Record<string, GuideContent> = { ...guidesBatch1, ...guidesBatch2 };
+export const guides: Record<string, GuideContent> = { ...guidesBatch1, ...guidesBatch2, ...guidesBatch3 };
