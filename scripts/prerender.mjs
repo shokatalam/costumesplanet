@@ -37,11 +37,12 @@ const vite = await createServer({
   appType: "custom",
   optimizeDeps: { noDiscovery: true, include: [] },
 });
-let costumes, categories, getCostumesByCategory, getExternalLinks, tidyProductList;
+let costumes, categories, getCostumesByCategory, getExternalLinks, tidyProductList, heroSlugs;
 try {
   ({ costumes, categories, getCostumesByCategory } = await vite.ssrLoadModule("/src/app/data/costumes.ts"));
   ({ getExternalLinks } = await vite.ssrLoadModule("/src/app/data/costumeAuthLinks.ts"));
   ({ tidyProductList } = await vite.ssrLoadModule("/src/app/data/itemUtils.ts"));
+  ({ heroSlugs } = await vite.ssrLoadModule("/src/app/data/heroImages.ts"));
 } finally {
   await vite.close();
 }
@@ -147,7 +148,8 @@ let count = 0;
 for (const c of costumes) {
   const route = `/${c.slug}/`;
   const url = `${SITE}${route}`;
-  const image = imageMap[c.slug] || "";
+  // Self-hosted hero image first (stable, indexable); Supabase map as fallback
+  const image = heroSlugs.has(c.slug) ? `${SITE}/images/costumes/${c.slug}.jpg` : imageMap[c.slug] || "";
   const items = itemsFor(c);
   const related = c.relatedSlugs.map((s) => costumes.find((x) => x.slug === s)).filter(Boolean);
   const external = getExternalLinks(c.slug, c.category);

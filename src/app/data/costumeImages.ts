@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { projectId, publicAnonKey } from "/utils/supabase/info";
+import { heroSlugs } from "./heroImages";
 
 const API_BASE = `https://${projectId}.supabase.co/functions/v1/make-server-0d51dc15`;
 const STORAGE_HOST = `${projectId}.supabase.co`;
@@ -178,6 +179,9 @@ export function refreshImageMap(): Promise<void> {
 
 /** Get the signed image URL for a slug (empty string if unavailable) */
 export function getCostumeImage(slug: string): string {
+  // Self-hosted hero image (public/images/costumes) wins: it can't expire or
+  // go down with a third-party service. Fall back to the Supabase map.
+  if (heroSlugs.has(slug)) return `/images/costumes/${slug}.jpg`;
   return imageMap[slug] || "";
 }
 
