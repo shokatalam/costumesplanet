@@ -44,6 +44,7 @@ export interface CostumeBlog {
 }
 
 import { guides, type QuickFact, type GuideSection } from "./guides";
+import { serp } from "./serp";
 import type { ProductLink } from "./itemUtils";
 
 // Images are now sourced from costumeImages.ts (permanent WordPress URLs)
@@ -424,10 +425,10 @@ export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
   if (!guide) return base;
   return {
     ...base,
-    seoTitle: guide.seoTitle,
+    seoTitle: serp[slug]?.[0] ?? guide.seoTitle,
     h1Title: guide.h1Title,
     excerpt: guide.excerpt,
-    metaDescription: guide.metaDescription,
+    metaDescription: serp[slug]?.[1] ?? guide.metaDescription,
     dateModified: guide.updated,
     items: guide.items.map((it) => ({ name: it.name, amazonUrl: it.url })),
     curatedItems: guide.items,

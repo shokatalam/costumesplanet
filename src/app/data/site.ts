@@ -11,6 +11,7 @@
 // =============================================================================
 
 import type { CostumeBlog } from "./costumes";
+import { hubSerp } from "./serp";
 
 export interface HubFAQ {
   question: string;
@@ -388,6 +389,12 @@ export const hubs: Hub[] = [
     related: ["80s-retro", "movie-characters", "cartoon-characters"],
   },
 ];
+
+// Search-result copy lives in serp.ts so it can be tuned without touching page content
+for (const h of hubs) {
+  const s = hubSerp[h.slug];
+  if (s) [h.seoTitle, h.metaDescription] = s;
+}
 
 const byName = new Map(hubs.map((h) => [h.name, h]));
 const bySlug = new Map(hubs.map((h) => [h.slug, h]));

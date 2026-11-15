@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { getCostumeBySlug, costumes } from "../data/costumes";
 import { CostumeImage } from "./CostumeImage";
 import { BlogCard } from "./BlogCard";
+import { ShoppingChecklist } from "./ShoppingChecklist";
 import { getScrapedItems, onItemMapUpdate } from "../data/costumeLinks";
 import { tidyProductList, type ProductLink } from "../data/itemUtils";
 import type { GuideSection } from "../data/guides";
@@ -249,7 +250,7 @@ export function BlogPost() {
               </dl>
             )}
             <a href="#shopping-list" className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1a237e] text-white text-sm hover:bg-[#283593]" style={{ fontWeight: 600 }}>
-              <ShoppingCart className="w-4 h-4" /> See the {items.length}-piece shopping list
+              <ShoppingCart className="w-4 h-4" /> Check what you already own ({items.length} pieces)
             </a>
           </section>
 
@@ -272,29 +273,7 @@ export function BlogPost() {
           {/* ═══ SHOPPING LIST ═══ */}
           <section className="mt-12">
             <H2 id="shopping-list" icon={ShoppingCart}>{name} costume shopping list</H2>
-            <ol className="space-y-3">
-              {items.map((item, i) => (
-                <li key={i} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 md:p-5 bg-white rounded-2xl border border-gray-100 hover:border-[#FF9900]/40 transition-colors">
-                  <div className="flex gap-4 flex-1 min-w-0">
-                    <span className="w-9 h-9 rounded-lg bg-[#FF9900]/10 text-[#c26f00] flex items-center justify-center shrink-0 text-sm" style={display}>
-                      {i + 1}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-gray-900" style={{ fontWeight: 700 }}>{item.name}</p>
-                      {item.note && <p className="text-sm text-gray-600 mt-1 leading-relaxed">{item.note}</p>}
-                      {i === 0 && costume.handwritten && (
-                        <p className="mt-2 inline-flex items-center gap-1 text-xs text-green-700 bg-green-50 rounded-md px-2 py-0.5" style={{ fontWeight: 600 }}>
-                          <Check className="w-3 h-3" /> Fastest complete option
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="sm:shrink-0 pl-13 sm:pl-0">
-                    <AmazonButton url={item.url} name={item.name} />
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <ShoppingChecklist slug={costume.slug} name={name} items={items} fastestFirst={!!costume.handwritten} BuyButton={AmazonButton} />
             <p className="mt-4 text-xs text-gray-400">As an Amazon Associate we earn from qualifying purchases. Links open Amazon results for the piece described.</p>
           </section>
 
