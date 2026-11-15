@@ -177,12 +177,23 @@ export function refreshImageMap(): Promise<void> {
   return forceRefreshImageMap();
 }
 
-/** Get the signed image URL for a slug (empty string if unavailable) */
-export function getCostumeImage(slug: string): string {
-  // Self-hosted hero image (public/images/costumes) wins: it can't expire or
-  // go down with a third-party service. Fall back to the Supabase map.
-  if (heroSlugs.has(slug)) return `/images/costumes/${slug}.jpg`;
+/** The original costume photo from Supabase Storage (signed URL, may expire). */
+export function getOriginalPhoto(slug: string): string {
   return imageMap[slug] || "";
+}
+
+/** Self-hosted "what you need" graphic (public/images/costumes), if this guide has one. */
+export function getHeroGraphic(slug: string): string {
+  return heroSlugs.has(slug) ? `/images/costumes/${slug}.jpg` : "";
+}
+
+/**
+ * Best image for a slug: the original photo when we have one, otherwise the
+ * self-hosted graphic. CostumeImage also falls back to the graphic if the
+ * photo fails to load, so a Supabase outage never leaves a blank box.
+ */
+export function getCostumeImage(slug: string): string {
+  return getOriginalPhoto(slug) || getHeroGraphic(slug);
 }
 
 /** Check whether we currently hold any image URLs */

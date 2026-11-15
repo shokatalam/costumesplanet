@@ -23,10 +23,10 @@ export function BlogCard({ costume, featured = false }: BlogCardProps) {
         featured ? "ring-1 ring-[#FF9900]/20" : ""
       }`}
     >
-      <div className="relative overflow-hidden aspect-[1200/630] bg-[#0b1240]">
+      <div className="relative overflow-hidden aspect-[4/3] bg-[#0b1240]">
         <CostumeImage
           slug={costume.slug}
-          alt={`${name} costume: what you need`}
+          alt={`${name} costume`}
           className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
           priority={featured}
         />

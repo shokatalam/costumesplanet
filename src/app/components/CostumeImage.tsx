@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   getCostumeImage,
+  getHeroGraphic,
   onImageMapUpdate,
   refreshImageMap,
 } from "../data/costumeImages";
@@ -95,24 +96,33 @@ export function CostumeImage({
   // Storage URLs are signed and can expire. On the first failure, ask for a
   // fresh map once instead of dropping straight to the placeholder forever.
   const handleError = useCallback(() => {
-    setImgError(true);
     if (!retriedRef.current) {
       retriedRef.current = true;
       void refreshImageMap();
     }
-  }, []);
+    // Photo failed: show the self-hosted graphic instead of a placeholder.
+    const graphic = getHeroGraphic(slug);
+    if (graphic && imageUrl !== graphic) {
+      setImageUrl(graphic);
+      return;
+    }
+    setImgError(true);
+  }, [slug, imageUrl]);
+
+  // The graphic is a 1200x630 card with text: never crop it.
+  const isGraphic = !!imageUrl && imageUrl === getHeroGraphic(slug);
 
   const showImage = imageUrl && !imgError;
 
   if (showImage) {
     return (
-      <div ref={setRef} className={`relative overflow-hidden ${className}`}>
+      <div ref={setRef} className={`relative overflow-hidden ${className}`} style={isGraphic ? { background: "#0b1240" } : undefined}>
         {isVisible ? (
           <img
             src={imageUrl}
             alt={alt}
             className="w-full h-full"
-            style={{ objectFit }}
+            style={{ objectFit: isGraphic ? "contain" : objectFit, objectPosition: isGraphic ? "center" : "top" }}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             referrerPolicy="no-referrer"

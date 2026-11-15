@@ -1,9 +1,9 @@
 import { useParams, Link } from "react-router";
 import { ChevronRight, ShoppingCart, ExternalLink, BookOpen, HelpCircle, Users, Check, ListChecks, Zap, Layers } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { getCostumeBySlug, costumes } from "../data/costumes";
-import { CostumeImage } from "./CostumeImage";
+import { getOriginalPhoto, getHeroGraphic, onImageMapUpdate, refreshImageMap } from "../data/costumeImages";
 import { BlogCard } from "./BlogCard";
 import { ShoppingChecklist } from "./ShoppingChecklist";
 import { getScrapedItems, onItemMapUpdate } from "../data/costumeLinks";
@@ -151,6 +151,46 @@ function Sections({ list }: { list: GuideSection[] }) {
   );
 }
 
+/**
+ * The original costume photo (Supabase). Renders nothing if there is no photo
+ * or it fails to load, so the header never shows an empty frame.
+ */
+function CharacterPhoto({ slug, alt }: { slug: string; alt: string }) {
+  const [url, setUrl] = useState(() => getOriginalPhoto(slug));
+  const [failed, setFailed] = useState(false);
+  const retried = useRef(false);
+  useEffect(() => {
+    setUrl(getOriginalPhoto(slug));
+    setFailed(false);
+    retried.current = false;
+    return onImageMapUpdate(() => {
+      const next = getOriginalPhoto(slug);
+      setUrl(next);
+      if (next) setFailed(false);
+    });
+  }, [slug]);
+  if (!url || failed) return null;
+  return (
+    <figure className="mt-8 lg:mt-0 rounded-2xl overflow-hidden border border-white/15 bg-white/5 shadow-2xl shadow-black/30 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/5]">
+      <img
+        src={url}
+        alt={alt}
+        className="w-full h-full object-cover object-top"
+        loading="eager"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onError={() => {
+          setFailed(true);
+          if (!retried.current) {
+            retried.current = true;
+            void refreshImageMap();
+          }
+        }}
+      />
+    </figure>
+  );
+}
+
 const fmt = (d: string) => new Date(d + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
 export function BlogPost() {
@@ -218,16 +258,19 @@ export function BlogPost() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="bg-[#fafbff]">
       {/* ═══ HEADER ═══ */}
       <header className="bg-gradient-to-br from-[#070b2e] via-[#111b63] to-[#1a237e] text-white">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 pt-8 pb-10">
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-white/50 mb-6 min-w-0">
-            <Link to="/" className="hover:text-white shrink-0">Home</Link>
-            <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-            <Link to={categoryPath(costume.category)} className="hover:text-white truncate">{hubLabel}</Link>
-          </nav>
-          <h1 className="text-3xl md:text-[2.6rem] leading-[1.12] max-w-4xl" style={display}>{costume.h1Title}</h1>
-          <p className="mt-4 text-sm text-white/60">
-            By the CostumesPlanet editors · Updated <time dateTime={costume.dateModified}>{fmt(costume.dateModified)}</time> · {minutes} min read
-          </p>
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 pt-8 pb-10 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10 lg:items-center">
+          <div className="min-w-0">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-white/50 mb-6 min-w-0">
+              <Link to="/" className="hover:text-white shrink-0">Home</Link>
+              <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+              <Link to={categoryPath(costume.category)} className="hover:text-white truncate">{hubLabel}</Link>
+            </nav>
+            <h1 className="text-3xl md:text-[2.6rem] leading-[1.12] max-w-4xl" style={display}>{costume.h1Title}</h1>
+            <p className="mt-4 text-sm text-white/60">
+              By the CostumesPlanet editors · Updated <time dateTime={costume.dateModified}>{fmt(costume.dateModified)}</time> · {minutes} min read
+            </p>
+          </div>
+          <CharacterPhoto slug={costume.slug} alt={`${name} costume`} />
         </div>
       </header>
 
@@ -254,11 +297,6 @@ export function BlogPost() {
             </a>
           </section>
 
-          {/* ═══ HERO IMAGE ═══ */}
-          <figure className="mt-8 rounded-2xl overflow-hidden border border-gray-100 bg-[#0b1240]">
-            <CostumeImage slug={costume.slug} alt={`${name} costume: what you need`} className="w-full aspect-[1200/630]" priority />
-          </figure>
-
           {/* ═══ INTRO ═══ */}
           {intro.length > 1 && (
             <div className="mt-8 space-y-5">
@@ -273,6 +311,19 @@ export function BlogPost() {
           {/* ═══ SHOPPING LIST ═══ */}
           <section className="mt-12">
             <H2 id="shopping-list" icon={ShoppingCart}>{name} costume shopping list</H2>
+            {getHeroGraphic(costume.slug) && (
+              <figure className="mb-6 rounded-2xl overflow-hidden border border-gray-100 bg-[#0b1240]">
+                <img
+                  src={getHeroGraphic(costume.slug)}
+                  alt={`${name} costume: what you need at a glance`}
+                  width={1200}
+                  height={630}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-auto block"
+                />
+              </figure>
+            )}
             <ShoppingChecklist slug={costume.slug} name={name} items={items} fastestFirst={!!costume.handwritten} BuyButton={AmazonButton} />
             <p className="mt-4 text-xs text-gray-400">As an Amazon Associate we earn from qualifying purchases. Links open Amazon results for the piece described.</p>
           </section>
