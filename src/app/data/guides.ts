@@ -15,10 +15,25 @@ import { guidesBatch2 } from "./guides-batch-2026-11";
 import { guidesBatch3 } from "./guides-batch-2026-11b";
 import { guidesBatch4 } from "./guides-batch-2026-11c";
 import { guidesBatch5 } from "./guides-batch-2026-11d";
+import { guidesDeep } from "./guides-deep";
 
 export interface QuickFact {
   label: string;
   value: string;
+}
+
+/**
+ * A free-form section written for one character only. Headings should be
+ * specific to that character ("Which Daenerys should you be?"), never generic,
+ * so no two guides share the same outline.
+ */
+export interface GuideSection {
+  heading: string;
+  /** where it renders: "top" after the intro, "middle" after the shopping list (default), "end" after the dressing guide */
+  placement?: "top" | "middle" | "end";
+  paragraphs?: string[];
+  bullets?: string[];
+  table?: { head: string[]; rows: string[][] };
 }
 
 export interface GuideContent {
@@ -34,6 +49,7 @@ export interface GuideContent {
   dressingGuide: DressingStep[];
   about: string[];
   faqs: FAQ[];
+  sections?: GuideSection[];
 }
 
 const amz = (asin: string) => `https://www.amazon.com/dp/${asin}?tag=cplanet0c-20`;
@@ -904,4 +920,12 @@ const guidesBatch1: Record<string, GuideContent> = {
 };
 
 // All hand-written guides, keyed by slug. Later batches live in their own files.
-export const guides: Record<string, GuideContent> = { ...guidesBatch1, ...guidesBatch2, ...guidesBatch3, ...guidesBatch4, ...guidesBatch5 };
+const base: Record<string, GuideContent> = { ...guidesBatch1, ...guidesBatch2, ...guidesBatch3, ...guidesBatch4, ...guidesBatch5 };
+
+// Deep rewrites replace fields (intro, sections, …) on a base guide; their faqs are appended.
+export const guides: Record<string, GuideContent> = Object.fromEntries(
+  Object.entries(base).map(([slug, g]) => {
+    const d = guidesDeep[slug];
+    return [slug, d ? { ...g, ...d, faqs: [...g.faqs, ...(d.faqs ?? [])] } : g];
+  })
+);

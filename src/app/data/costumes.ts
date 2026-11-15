@@ -40,9 +40,10 @@ export interface CostumeBlog {
   characterName?: string;
   curatedItems?: ProductLink[];
   quickFacts?: QuickFact[];
+  sections?: GuideSection[];
 }
 
-import { guides, type QuickFact } from "./guides";
+import { guides, type QuickFact, type GuideSection } from "./guides";
 import type { ProductLink } from "./itemUtils";
 
 // Images are now sourced from costumeImages.ts (permanent WordPress URLs)
@@ -437,6 +438,7 @@ export const costumes: CostumeBlog[] = slugs.map((slug, i) => {
     faqs: guide.faqs,
     handwritten: true,
     characterName: guide.characterName,
+    sections: guide.sections,
   };
 });
 

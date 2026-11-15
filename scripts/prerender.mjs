@@ -154,6 +154,25 @@ const paras = (text) => text.split("\n\n").map((p) => `<p>${esc(p)}</p>`).join("
 let count = 0;
 
 // ── Shared fragments ──
+const sectionId = (h) => h.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+const sectionsHtml = (c, where) =>
+  (c.sections || [])
+    .filter((x) => (x.placement || "middle") === where)
+    .map(
+      (x) =>
+        `<h2 id="${sectionId(x.heading)}">${esc(x.heading)}</h2>${(x.paragraphs || []).map((p) => `<p>${esc(p)}</p>`).join("")}${
+          x.table
+            ? `<table><thead><tr>${x.table.head.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${x.table.rows
+                .map((r) => `<tr>${r.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`)
+                .join("")}</tbody></table>`
+            : ""
+        }${x.bullets ? `<ul>${x.bullets.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>` : ""}`
+    )
+    .join("");
+const sectionsText = (c) =>
+  (c.sections || [])
+    .map((x) => `## ${x.heading}\n${[...(x.paragraphs || []), ...(x.bullets || []).map((b) => `- ${b}`), ...(x.table ? [x.table.head.join(" | "), ...x.table.rows.map((r) => r.join(" | "))] : [])].join("\n")}`)
+    .join("\n\n");
 const updatedLabel = (d) => new Date(d + "T00:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 const firstSentence = (t) => (t.match(/^.+?[.!?](\s|$)/) || [t])[0].trim();
 const indexable = () => costumes.filter(isIndexable);
@@ -228,10 +247,13 @@ for (const c of costumes) {
   ${c.quickFacts?.length ? `<h2>At a glance</h2><table><tbody>${c.quickFacts.map((f) => `<tr><th scope="row">${esc(f.label)}</th><td>${esc(f.value)}</td></tr>`).join("")}</tbody></table>` : ""}
   <nav aria-label="On this page"><strong>On this page:</strong> <a href="#shopping-list">Shopping list</a> <a href="#how-to-wear">How to put it on</a> <a href="#about">About ${esc(name)}</a> <a href="#faq">FAQ</a> <a href="#related">Related costumes</a></nav>
   ${intro.slice(1).map((p) => `<p>${esc(p)}</p>`).join("")}
+  ${sectionsHtml(c, "top")}
   <h2 id="shopping-list">${esc(name)} costume shopping list</h2>
   <ol>${items.map((it) => `<li><a href="${esc(it.url)}" rel="sponsored nofollow noopener" target="_blank">${esc(it.name)}</a>${it.note ? ` — ${esc(it.note)}` : ""}</li>`).join("")}</ol>
+  ${sectionsHtml(c, "middle")}
   <h2 id="how-to-wear">How to put on a ${esc(name)} costume</h2>
   ${c.dressingGuide.map((d, i) => `<h3>Step ${i + 1}: ${esc(d.itemName)}</h3><ol>${d.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>`).join("")}
+  ${sectionsHtml(c, "end")}
   <h2 id="about">About ${esc(name)}</h2>
   ${paras(c.aboutSection)}
   <h2 id="faq">${esc(name)} costume FAQ</h2>
@@ -454,7 +476,7 @@ fs.writeFileSync(path.join(DIST, "llms.txt"), llms);
 const llmsFull = latest
   .map((c) => {
     const items = itemsFor(c);
-    return `# ${c.h1Title}\nURL: ${SITE}/${c.slug}/\nUpdated: ${c.dateModified}\n\n${c.introSection}\n\n${(c.quickFacts || []).map((f) => `- ${f.label}: ${f.value}`).join("\n")}\n\n## Shopping list\n${items.map((it) => `- ${it.name}${it.note ? `: ${it.note}` : ""}`).join("\n")}\n\n## How to put it on\n${c.dressingGuide.map((d) => `### ${d.itemName}\n${d.steps.map((s) => `- ${s}`).join("\n")}`).join("\n")}\n\n## About\n${c.aboutSection}\n\n## FAQ\n${c.faqs.map((f) => `**${f.question}**\n${f.answer}`).join("\n\n")}\n`;
+    return `# ${c.h1Title}\nURL: ${SITE}/${c.slug}/\nUpdated: ${c.dateModified}\n\n${c.introSection}\n\n${(c.quickFacts || []).map((f) => `- ${f.label}: ${f.value}`).join("\n")}\n\n## Shopping list\n${items.map((it) => `- ${it.name}${it.note ? `: ${it.note}` : ""}`).join("\n")}\n\n## How to put it on\n${c.dressingGuide.map((d) => `### ${d.itemName}\n${d.steps.map((s) => `- ${s}`).join("\n")}`).join("\n")}\n\n${sectionsText(c)}\n\n## About\n${c.aboutSection}\n\n## FAQ\n${c.faqs.map((f) => `**${f.question}**\n${f.answer}`).join("\n\n")}\n`;
   })
   .join("\n---\n\n");
 fs.writeFileSync(path.join(DIST, "llms-full.txt"), `# CostumesPlanet — full guide text\n\n${llmsFull}`);

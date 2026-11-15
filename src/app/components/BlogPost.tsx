@@ -7,6 +7,7 @@ import { CostumeImage } from "./CostumeImage";
 import { BlogCard } from "./BlogCard";
 import { getScrapedItems, onItemMapUpdate } from "../data/costumeLinks";
 import { tidyProductList, type ProductLink } from "../data/itemUtils";
+import type { GuideSection } from "../data/guides";
 import { getExternalLinks } from "../data/costumeAuthLinks";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { RawSitemapView } from "./RawSitemapView";
@@ -101,6 +102,54 @@ function H2({ id, icon: Icon, children }: { id: string; icon: React.ElementType;
   );
 }
 
+export const sectionId = (h: string) => h.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+
+function Sections({ list }: { list: GuideSection[] }) {
+  if (!list.length) return null;
+  return (
+    <>
+      {list.map((sec) => (
+        <section key={sec.heading} className="mt-14">
+          <h2 id={sectionId(sec.heading)} className="scroll-mt-24 text-2xl md:text-[1.7rem] text-gray-900 mb-5" style={display}>
+            {sec.heading}
+          </h2>
+          {sec.paragraphs?.map((p, i) => (
+            <p key={i} className="text-gray-700 leading-[1.85] text-[1.02rem] mb-5">{p}</p>
+          ))}
+          {sec.table && (
+            <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white mb-5">
+              <table className="w-full text-sm min-w-[560px]">
+                <thead className="bg-gray-50 text-gray-500 text-left">
+                  <tr>{sec.table.head.map((h) => <th key={h} className="px-4 py-3" style={{ fontWeight: 600 }}>{h}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {sec.table.rows.map((r, i) => (
+                    <tr key={i} className="border-t border-gray-100 align-top">
+                      {r.map((cell, j) => (
+                        <td key={j} className={`px-4 py-3 ${j === 0 ? "text-gray-900" : "text-gray-600"}`} style={j === 0 ? { fontWeight: 600 } : undefined}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {sec.bullets && (
+            <ul className="space-y-3 mb-5">
+              {sec.bullets.map((b, i) => (
+                <li key={i} className="flex gap-3 text-gray-700 leading-relaxed">
+                  <Check className="w-4 h-4 text-[#FF9900] shrink-0 mt-1.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
+    </>
+  );
+}
+
 const fmt = (d: string) => new Date(d + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
 export function BlogPost() {
@@ -147,12 +196,18 @@ export function BlogPost() {
 
   const intro = costume.introSection.split("\n\n");
   const external = getExternalLinks(costume.slug, costume.category);
-  const words = [costume.introSection, costume.aboutSection, ...costume.faqs.map((f) => f.answer), ...items.map((i) => i.note || "")].join(" ").split(/\s+/).length;
+  const sections = costume.sections ?? [];
+  const at = (p: "top" | "middle" | "end") => sections.filter((x) => (x.placement ?? "middle") === p);
+  const sectionText = sections.flatMap((x) => [...(x.paragraphs ?? []), ...(x.bullets ?? []), ...(x.table?.rows.flat() ?? [])]);
+  const words = [costume.introSection, costume.aboutSection, ...sectionText, ...costume.faqs.map((f) => f.answer), ...items.map((i) => i.note || "")].join(" ").split(/\s+/).length;
   const minutes = Math.max(2, Math.round(words / 220));
 
   const toc = [
+    ...at("top").map((x) => [sectionId(x.heading), x.heading]),
     ["shopping-list", "Shopping list"],
+    ...at("middle").map((x) => [sectionId(x.heading), x.heading]),
     ["how-to-wear", "How to put it on"],
+    ...at("end").map((x) => [sectionId(x.heading), x.heading]),
     ["about", `About ${name}`],
     ["faq", "FAQ"],
     ["related", "Related costumes"],
@@ -212,6 +267,8 @@ export function BlogPost() {
             </div>
           )}
 
+          <Sections list={at("top")} />
+
           {/* ═══ SHOPPING LIST ═══ */}
           <section className="mt-12">
             <H2 id="shopping-list" icon={ShoppingCart}>{name} costume shopping list</H2>
@@ -241,6 +298,8 @@ export function BlogPost() {
             <p className="mt-4 text-xs text-gray-400">As an Amazon Associate we earn from qualifying purchases. Links open Amazon results for the piece described.</p>
           </section>
 
+          <Sections list={at("middle")} />
+
           {/* ═══ HOW TO WEAR ═══ */}
           <section className="mt-14">
             <H2 id="how-to-wear" icon={BookOpen}>How to put on a {name} costume</H2>
@@ -263,6 +322,8 @@ export function BlogPost() {
               ))}
             </ol>
           </section>
+
+          <Sections list={at("end")} />
 
           {/* ═══ ABOUT ═══ */}
           <section className="mt-14">
