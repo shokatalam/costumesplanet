@@ -122,7 +122,7 @@ export function CostumeImage({
             src={imageUrl}
             alt={alt}
             className="w-full h-full"
-            style={{ objectFit: isGraphic ? "contain" : objectFit, objectPosition: isGraphic ? "center" : "top" }}
+            style={{ objectFit: isGraphic ? "contain" : objectFit, objectPosition: "center" }}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             referrerPolicy="no-referrer"

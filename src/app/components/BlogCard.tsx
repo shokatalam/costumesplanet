@@ -23,7 +23,7 @@ export function BlogCard({ costume, featured = false }: BlogCardProps) {
         featured ? "ring-1 ring-[#FF9900]/20" : ""
       }`}
     >
-      <div className="relative overflow-hidden aspect-[4/3] bg-[#0b1240]">
+      <div className="relative overflow-hidden aspect-[768/461] bg-white">
         <CostumeImage
           slug={costume.slug}
           alt={`${name} costume`}

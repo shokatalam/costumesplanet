@@ -171,11 +171,11 @@ function CharacterPhoto({ slug, alt }: { slug: string; alt: string }) {
   }, [slug]);
   if (!url || failed) return null;
   return (
-    <figure className="mt-8 lg:mt-0 rounded-2xl overflow-hidden border border-white/15 bg-white/5 shadow-2xl shadow-black/30 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/5]">
+    <figure className="mt-8 lg:mt-0 rounded-2xl overflow-hidden border border-white/15 bg-white/5 shadow-2xl shadow-black/30 aspect-[768/461] bg-white">
       <img
         src={url}
         alt={alt}
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-contain"
         loading="eager"
         decoding="async"
         referrerPolicy="no-referrer"
@@ -258,7 +258,7 @@ export function BlogPost() {
     <div style={{ fontFamily: "'Inter', sans-serif" }} className="bg-[#fafbff]">
       {/* ═══ HEADER ═══ */}
       <header className="bg-gradient-to-br from-[#070b2e] via-[#111b63] to-[#1a237e] text-white">
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 pt-8 pb-10 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10 lg:items-center">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 pt-8 pb-10 lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-10 lg:items-center">
           <div className="min-w-0">
             <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-white/50 mb-6 min-w-0">
               <Link to="/" className="hover:text-white shrink-0">Home</Link>
