@@ -957,7 +957,7 @@ export const guidesBatch4: Record<string, GuideContent> = {
       "The Plastics' talent-show look is a red Santa mini dress with white fur trim, a Santa hat, black knee-high boots and black gloves, with a candy cane and the 'Jingle Bell Rock' routine.",
     intro: [
       "A Mean Girls Christmas costume needs: a red velvet Santa mini dress with white fur trim, a red Santa hat, black knee-high boots, black gloves, and a candy cane, worn by four people as Regina, Gretchen, Karen and Cady for the 'Jingle Bell Rock' talent-show scene. It is one of the most popular group costumes of the last twenty years, because the outfit is cheap, identical for everyone and instantly recognisable.",
-      "Matching matters more than detail. Buy four of the same Santa dress and the same boots and you've nailed it; then learn the routine, which is about thirty seconds long and ends with Gretchen kicking the stereo. A fifth person can be Damian in the back with the boombox.",
+      "Matching matters more than detail. Buy four of the same Santa dress and the same boots and you've nailed it; then learn the routine, which is short and easy to learn. A fifth person can run the music.",
     ],
     quickFacts: [
       { label: "Difficulty", value: "Very easy" },
@@ -972,7 +972,7 @@ export const guidesBatch4: Record<string, GuideContent> = {
       { name: "Black gloves", url: search("women black short gloves"), note: "Short, wrist-length." },
       { name: "Black tights", url: search("black opaque tights"), note: "Optional for warmth; the film has bare legs." },
       { name: "Candy cane props", url: search("large candy cane prop"), note: "One each, for the routine." },
-      { name: "Boombox prop (for a Damian)", url: search("boombox prop toy"), note: "The fifth member runs the music and gets hit in the face." },
+      { name: "Boombox prop (for a Damian)", url: search("boombox prop toy"), note: "A fifth person can run the music." },
     ],
     dressingGuide: [
       { itemName: "Outfit", steps: [
@@ -988,13 +988,13 @@ export const guidesBatch4: Record<string, GuideContent> = {
       ] },
     ],
     about: [
-      "Mean Girls (2004), written by Tina Fey and directed by Mark Waters, follows Cady Heron (Lindsay Lohan) as she infiltrates the Plastics, Regina George (Rachel McAdams), Gretchen Wieners (Lacey Chabert) and Karen Smith (Amanda Seyfried). Their talent-show performance of 'Jingle Bell Rock' in matching Santa outfits goes wrong when Gretchen kicks the stereo into Damian's face and Cady saves it by singing a cappella.",
+      "Mean Girls (2004), written by Tina Fey and directed by Mark Waters, follows Cady Heron (Lindsay Lohan) as she infiltrates the Plastics, Regina George (Rachel McAdams), Gretchen Wieners (Lacey Chabert) and Karen Smith (Amanda Seyfried). Their talent-show performance of 'Jingle Bell Rock' in matching Santa outfits goes wrong when the music cuts out mid-routine, and the girls carry on singing a cappella.",
       "The scene is one of the film's most quoted, and the matching Santa dresses have become a go-to group costume for Halloween and Christmas parties. The 2024 musical film recreated the number, which has kept it current.",
     ],
     faqs: [
       { question: "What do the Plastics wear in the Jingle Bell Rock scene?", answer: "Matching red Santa mini dresses with white fur trim, red Santa hats, black knee-high boots and black gloves, with candy canes as props." },
       { question: "How many people do I need for a Mean Girls Christmas costume?", answer: "Four is ideal: Regina, Gretchen, Karen and Cady. It works with three, and a fifth can be Damian with the boombox. Everyone wears the same outfit, so it scales easily." },
-      { question: "What is the Jingle Bell Rock dance?", answer: "A short routine from the talent show: knee slaps, hip bumps and a line formation ending with Gretchen kicking the stereo. The clip is online and takes about ten minutes to learn." },
+      { question: "What is the Jingle Bell Rock dance?", answer: "A short routine from the talent show: knee slaps, hip bumps and a line formation, until the music cuts out. The clip is online and takes about ten minutes to learn." },
       { question: "Is this a Halloween or Christmas costume?", answer: "Both. It's a Halloween favourite because it's a recognisable group costume, and it's perfect for Christmas parties because, well, it's four Santas." },
     ],
   },
