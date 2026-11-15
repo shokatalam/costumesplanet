@@ -18,6 +18,7 @@ import { guidesBatch5 } from "./guides-batch-2026-11d";
 import { guidesDeep } from "./guides-deep";
 import { guidesDeep2 } from "./guides-deep-2";
 import { guidesDeep3 } from "./guides-deep-3";
+import { guidesDeep4 } from "./guides-deep-4";
 
 export interface QuickFact {
   label: string;
@@ -924,10 +925,12 @@ const guidesBatch1: Record<string, GuideContent> = {
 // All hand-written guides, keyed by slug. Later batches live in their own files.
 const base: Record<string, GuideContent> = { ...guidesBatch1, ...guidesBatch2, ...guidesBatch3, ...guidesBatch4, ...guidesBatch5 };
 
+const deepSources = [guidesDeep, guidesDeep2, guidesDeep3, guidesDeep4];
+
 // Deep rewrites replace fields (intro, sections, …) on a base guide; their faqs are appended.
 export const guides: Record<string, GuideContent> = Object.fromEntries(
   Object.entries(base).map(([slug, g]) => {
-    const d = guidesDeep[slug] ?? guidesDeep2[slug] ?? guidesDeep3[slug];
+    const d = deepSources.map((src) => src[slug]).find(Boolean);
     return [slug, d ? { ...g, ...d, faqs: [...g.faqs, ...(d.faqs ?? [])] } : g];
   })
 );
