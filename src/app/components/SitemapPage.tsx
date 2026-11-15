@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { categoryPath } from "../data/site";
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import { Map, FileText, FolderOpen, BookOpen, Globe, Bot, ExternalLink, Copy, Check } from "lucide-react";
@@ -185,7 +186,7 @@ export function SitemapPage() {
                 {categories.map((cat) => {
                   const count = costumes.filter((c) => c.category === cat).length;
                   return (
-                    <Link key={cat} to={`/category/${encodeURIComponent(cat)}`} className="block p-4 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
+                    <Link key={cat} to={categoryPath(cat)} className="block p-4 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all group">
                       <p className="text-sm font-medium text-gray-900 group-hover:text-orange-600 transition-colors">{cat}</p>
                       <p className="text-xs text-gray-400 mt-1">{count} costume {count === 1 ? "guide" : "guides"}</p>
                     </Link>

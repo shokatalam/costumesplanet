@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { categoryPath } from "../data/site";
 import { Search, X, Sparkles, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { searchCostumes, costumes, categories } from "../data/costumes";
@@ -211,7 +212,7 @@ export function SearchPage() {
                   {categories.slice(0, 6).map((cat) => (
                     <Link
                       key={cat}
-                      to={`/category/${encodeURIComponent(cat)}`}
+                      to={categoryPath(cat)}
                       className="px-4 py-2 text-sm bg-white rounded-xl border border-gray-100 text-gray-600 hover:text-[#1a237e] hover:border-[#1a237e]/20 transition-all"
                     >
                       {cat}

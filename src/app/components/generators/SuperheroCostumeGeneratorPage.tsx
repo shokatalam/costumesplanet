@@ -176,7 +176,7 @@ export function SuperheroCostumeGeneratorPage() {
                 ))}
               </div>
               <p className="text-white/35 text-xs mt-3">
-                <Link to="/category/Marvel%20%26%20DC/" className="text-[#FF9900] hover:underline">Browse all Marvel & DC costume guides →</Link>
+                <Link to="/category/marvel-dc/" className="text-[#FF9900] hover:underline">Browse all Marvel & DC costume guides →</Link>
               </p>
             </div>
           </div>

@@ -12,7 +12,7 @@
 // Usage:  node scripts/generate-hero-images.mjs gargamel-costume [more-slugs…]
 //         node scripts/generate-hero-images.mjs --all   (every hand-written guide)
 //
-// Run locally and commit the PNGs. This is NOT part of `npm run build`.
+// Run locally and commit the JPGs. This is NOT part of `npm run build`.
 // =============================================================================
 
 import { createServer } from "vite";
@@ -86,7 +86,15 @@ const shortLabel = (name) => {
     s = tail.length > 1 ? `${alt[1]} ${tail[tail.length - 1]}` : alt[1];
   }
   s = s.split(/\s+with\s+|\s*\/\s*|,/i)[0].trim();
-  if (s.length > 30) s = s.slice(0, 29).trimEnd() + "…";
+  if (/\b(costume|cosplay)\s+set\b/i.test(s)) return "Complete costume set";
+  s = s.replace(/^(?:[A-Z][\w.'-]*\s){1,3}(?=(cosplay|costume)\b)/, "").replace(/^(cosplay|costume)\s+/i, "");
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  if (s.length > 28) {
+    const words = s.split(" ");
+    while (words.join(" ").length > 26 && words.length > 1) words.pop();
+    while (words.length > 1 && /^(for|the|and|of|with|to|a|or|in|on)$/i.test(words[words.length - 1])) words.pop();
+    s = words.join(" ");
+  }
   return s;
 };
 const fact = (c, label) => c.quickFacts?.find((f) => f.label.toLowerCase().includes(label))?.value || "";
@@ -151,7 +159,7 @@ for (const slug of wanted) {
 }
 await browser.close();
 
-// ── Manifest: every slug that has a PNG on disk ──
+// ── Manifest: every slug that has a JPG on disk ──
 const have = fs.readdirSync(OUT).filter((f) => f.endsWith(".jpg")).map((f) => f.replace(/\.jpg$/, "")).sort();
 fs.writeFileSync(
   MANIFEST,

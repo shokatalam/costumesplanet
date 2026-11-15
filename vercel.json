@@ -23,93 +23,178 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/page/:n",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/category/game-of-thrones-costumes/:rest*",
-      "destination": "/category/Game%20of%20Thrones/",
-      "permanent": true
-    },
-    {
-      "source": "/category/game-of-thrones/:rest*",
-      "destination": "/category/Game%20of%20Thrones/",
-      "permanent": true
-    },
-    {
-      "source": "/category/steven-universe/:rest*",
-      "destination": "/category/Steven%20Universe/",
+      "destination": "/category/game-of-thrones/",
       "permanent": true
     },
     {
       "source": "/category/marvel-costumes/:rest*",
-      "destination": "/category/Marvel%20%26%20DC/",
+      "destination": "/category/marvel-dc/",
       "permanent": true
     },
     {
       "source": "/category/marvel/:rest*",
-      "destination": "/category/Marvel%20%26%20DC/",
+      "destination": "/category/marvel-dc/",
       "permanent": true
     },
     {
       "source": "/category/dc/:rest*",
-      "destination": "/category/Marvel%20%26%20DC/",
+      "destination": "/category/marvel-dc/",
       "permanent": true
     },
     {
       "source": "/category/star-wars-costumes/:rest*",
-      "destination": "/category/Star%20Wars/",
-      "permanent": true
-    },
-    {
-      "source": "/category/star-wars/:rest*",
-      "destination": "/category/Star%20Wars/",
+      "destination": "/category/star-wars/",
       "permanent": true
     },
     {
       "source": "/category/league-of-legends/:rest*",
-      "destination": "/category/Gaming/",
-      "permanent": true
-    },
-    {
-      "source": "/category/animated-tv/:rest*",
-      "destination": "/category/Animated%20TV/",
-      "permanent": true
-    },
-    {
-      "source": "/category/movie-characters/:rest*",
-      "destination": "/category/Movie%20Characters/",
-      "permanent": true
-    },
-    {
-      "source": "/category/cartoon-characters/:rest*",
-      "destination": "/category/Cartoon%20Characters/",
-      "permanent": true
-    },
-    {
-      "source": "/category/pop-culture/:rest*",
-      "destination": "/category/Pop%20Culture/",
-      "permanent": true
-    },
-    {
-      "source": "/category/diy-dance/:rest*",
-      "destination": "/category/DIY%20%26%20Dance/",
+      "destination": "/category/gaming/",
       "permanent": true
     },
     {
       "source": "/category/halloween/:rest*",
-      "destination": "/category/Pop%20Culture/",
+      "destination": "/category/pop-culture/",
       "permanent": true
     },
     {
-      "source": "/category/80s-retro/:rest*",
-      "destination": "/category/80s%20%26%20Retro/",
+      "source": "/category/Game%20of%20Thrones/:rest*",
+      "destination": "/category/game-of-thrones/",
       "permanent": true
     },
     {
-      "source": "/category/classic-tv-film/:rest*",
-      "destination": "/category/Classic%20TV%20%26%20Film/",
+      "source": "/category/game-of-thrones/page/:n*",
+      "destination": "/category/game-of-thrones/",
       "permanent": true
     },
     {
-      "source": "/page/:n",
-      "destination": "/",
+      "source": "/category/Marvel%20%26%20DC/:rest*",
+      "destination": "/category/marvel-dc/",
+      "permanent": true
+    },
+    {
+      "source": "/category/marvel-dc/page/:n*",
+      "destination": "/category/marvel-dc/",
+      "permanent": true
+    },
+    {
+      "source": "/category/anime/page/:n*",
+      "destination": "/category/anime/",
+      "permanent": true
+    },
+    {
+      "source": "/category/gaming/page/:n*",
+      "destination": "/category/gaming/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Star%20Wars/:rest*",
+      "destination": "/category/star-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/category/star-wars/page/:n*",
+      "destination": "/category/star-wars/",
+      "permanent": true
+    },
+    {
+      "source": "/category/disney/page/:n*",
+      "destination": "/category/disney/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Steven%20Universe/:rest*",
+      "destination": "/category/steven-universe/",
+      "permanent": true
+    },
+    {
+      "source": "/category/steven-universe/page/:n*",
+      "destination": "/category/steven-universe/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Animated%20TV/:rest*",
+      "destination": "/category/animated-tv/",
+      "permanent": true
+    },
+    {
+      "source": "/category/animated-tv/page/:n*",
+      "destination": "/category/animated-tv/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Movie%20Characters/:rest*",
+      "destination": "/category/movie-characters/",
+      "permanent": true
+    },
+    {
+      "source": "/category/movie-characters/page/:n*",
+      "destination": "/category/movie-characters/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Cartoon%20Characters/:rest*",
+      "destination": "/category/cartoon-characters/",
+      "permanent": true
+    },
+    {
+      "source": "/category/cartoon-characters/page/:n*",
+      "destination": "/category/cartoon-characters/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Pop%20Culture/:rest*",
+      "destination": "/category/pop-culture/",
+      "permanent": true
+    },
+    {
+      "source": "/category/pop-culture/page/:n*",
+      "destination": "/category/pop-culture/",
+      "permanent": true
+    },
+    {
+      "source": "/category/DIY%20%26%20Dance/:rest*",
+      "destination": "/category/diy-dance/",
+      "permanent": true
+    },
+    {
+      "source": "/category/diy-dance/page/:n*",
+      "destination": "/category/diy-dance/",
+      "permanent": true
+    },
+    {
+      "source": "/category/80s%20%26%20Retro/:rest*",
+      "destination": "/category/80s-retro/",
+      "permanent": true
+    },
+    {
+      "source": "/category/80s-retro/page/:n*",
+      "destination": "/category/80s-retro/",
+      "permanent": true
+    },
+    {
+      "source": "/category/smurfs/page/:n*",
+      "destination": "/category/smurfs/",
+      "permanent": true
+    },
+    {
+      "source": "/category/horror/page/:n*",
+      "destination": "/category/horror/",
+      "permanent": true
+    },
+    {
+      "source": "/category/Classic%20TV%20%26%20Film/:rest*",
+      "destination": "/category/classic-tv-film/",
+      "permanent": true
+    },
+    {
+      "source": "/category/classic-tv-film/page/:n*",
+      "destination": "/category/classic-tv-film/",
       "permanent": true
     }
   ]

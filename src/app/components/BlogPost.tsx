@@ -1,23 +1,18 @@
 import { useParams, Link } from "react-router";
-import { ChevronDown, ChevronRight, ShoppingCart, ExternalLink, Sparkles, BookOpen, HelpCircle, Users, ArrowUp, Check } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView, useScroll, useTransform } from "motion/react";
-import { getCostumeBySlug, getCostumesByCategory, CostumeBlog } from "../data/costumes";
+import { ChevronRight, ShoppingCart, ExternalLink, BookOpen, HelpCircle, Users, Check, ListChecks, Zap, Layers } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion } from "motion/react";
+import { getCostumeBySlug, costumes } from "../data/costumes";
 import { CostumeImage } from "./CostumeImage";
 import { BlogCard } from "./BlogCard";
 import { getScrapedItems, onItemMapUpdate } from "../data/costumeLinks";
 import { tidyProductList, type ProductLink } from "../data/itemUtils";
-import { onRedditMapUpdate } from "../data/costumeReddit";
-import { Award } from "lucide-react";
-import { getExternalLinks, getInternalLinks, getIntroInternalLinks, getLinkTypeLabel, ExternalLink as ExtLink } from "../data/costumeAuthLinks";
-import { Globe, BookMarked, Link2 } from "lucide-react";
+import { getExternalLinks } from "../data/costumeAuthLinks";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 import { RawSitemapView } from "./RawSitemapView";
+import { hubFor, categoryPath, relatedGuides, anchorName, isIndexable } from "../data/site";
 
-// ── Reserved paths that should not be treated as blog slugs ──
 const RESERVED_PATHS = new Set(["categories", "category", "search", "sitemap", "sitemap.xml", "sitemap-pages.xml", "sitemap-posts.xml", "sitemap-categories.xml", "robots.txt", "llms.txt"]);
-
-// ── SEO file slugs that should render raw content from the API ──
 const SEO_FILE_MAP: Record<string, string> = {
   "sitemap.xml": "sitemap.xml",
   "sitemap-pages.xml": "sitemap-pages.xml",
@@ -27,72 +22,7 @@ const SEO_FILE_MAP: Record<string, string> = {
   "llms.txt": "llms.txt",
 };
 
-// ── Scroll Reveal ──
-function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 35 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// ── FAQ Accordion ──
-function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.05 }}
-      className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-[#1a237e]/15 hover:shadow-lg hover:shadow-[#1a237e]/3 transition-all duration-300"
-    >
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 md:p-6 text-left"
-      >
-        <div className="flex items-center gap-4 pr-4">
-          <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#1a237e]/5 to-[#1a237e]/10 flex items-center justify-center text-[#1a237e] text-xs shrink-0" style={{ fontWeight: 700 }}>
-            {index + 1}
-          </span>
-          <span className="text-gray-800 leading-snug" style={{ fontWeight: 600 }}>{question}</span>
-        </div>
-        <motion.div
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.25 }}
-          className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${open ? "bg-[#1a237e] text-white" : "bg-gray-100 text-gray-400"}`}
-        >
-          <ChevronDown className="w-4 h-4" />
-        </motion.div>
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            <div className="px-5 md:px-6 pb-6 pt-0">
-              <div className="pl-12 pr-2">
-                <div className="w-12 h-px bg-[#1a237e]/10 mb-4" />
-                <p className="text-gray-500 leading-[1.8]">{answer}</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
+const display = { fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 } as const;
 
 // ── Amazon CTA ──
 const AFFILIATE_TAG = "cplanet0c-20";
@@ -160,561 +90,281 @@ function AmazonButton({ url, name }: { url: string; name?: string }) {
   );
 }
 
-// ── Section Header ──
-function SectionHeader({ icon: Icon, title, accent = false }: { icon: React.ElementType; title: string; accent?: boolean }) {
+function H2({ id, icon: Icon, children }: { id: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-4 mb-8">
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-lg ${accent ? "bg-gradient-to-br from-[#FF9900] to-[#ffb84d] shadow-[#FF9900]/20" : "bg-gradient-to-br from-[#1a237e] to-[#3949ab] shadow-[#1a237e]/20"}`}>
-        <Icon className="w-5 h-5 text-white" />
-      </div>
-      <h2
-        className="text-xl md:text-2xl text-gray-900"
-        style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-      >
-        {title}
-      </h2>
-      <div className="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent" />
-    </div>
+    <h2 id={id} className="scroll-mt-24 flex items-center gap-3 text-2xl md:text-[1.7rem] text-gray-900 mb-6" style={display}>
+      <span className="w-10 h-10 rounded-xl bg-[#1a237e] text-white flex items-center justify-center shrink-0">
+        <Icon className="w-5 h-5" />
+      </span>
+      {children}
+    </h2>
   );
 }
 
-// Structured data (JSON-LD) is emitted at build time by scripts/prerender.mjs
+const fmt = (d: string) => new Date(d + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-// ── Scroll Progress Bar ──
-function ScrollProgress() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FF9900] via-[#ffce54] to-[#FF9900] origin-left z-[60]"
-      style={{ scaleX }}
-    />
-  );
-}
-
-// ── Floating Back to Top ──
-function BackToTop() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 600);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-[#1a237e] to-[#3949ab] text-white shadow-[0_8px_30px_rgba(26,35,126,0.3)] flex items-center justify-center z-50"
-        >
-          <ArrowUp className="w-5 h-5" />
-        </motion.button>
-      )}
-    </AnimatePresence>
-  );
-}
-
-// ═══════════════════════════════════════════
-// MAIN COMPONENT
-// ════════���══════════════════════════════════
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  
-  // If the slug matches an SEO file, render the raw content from the API
-  // (Fallback in case the top-level React Router route didn't catch it)
-  if (slug && SEO_FILE_MAP[slug]) {
-    return <RawSitemapView endpoint={SEO_FILE_MAP[slug]} />;
-  }
-
-  // If the slug matches a reserved path, don't render BlogPost at all
-  if (slug && RESERVED_PATHS.has(slug)) {
-    return null;
-  }
-  
   const costume = getCostumeBySlug(slug || "");
   const [, forceUpdate] = useState(0);
+  const hw = costume ? isIndexable(costume) : false;
 
-  // Set SEO title + meta description
   useDocumentMeta({
     title: costume?.seoTitle || "Costume Guide | CostumesPlanet",
     description: costume?.metaDescription || "Costume and cosplay guides: the pieces you need and how to put them together.",
     canonical: costume ? `https://costumesplanet.com/${costume.slug}/` : undefined,
+    robots: costume && !hw ? "noindex, follow" : undefined,
   });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+  useEffect(() => onItemMapUpdate(() => forceUpdate((n: number) => n + 1)), []);
 
-  // Re-render when item map loads
-  useEffect(() => {
-    const unsub = onItemMapUpdate(() => forceUpdate((n: number) => n + 1));
-    return unsub;
-  }, []);
-
-  // Re-render when Reddit map loads
-  useEffect(() => {
-    const unsub = onRedditMapUpdate(() => forceUpdate((n: number) => n + 1));
-    return unsub;
-  }, []);
+  if (slug && SEO_FILE_MAP[slug]) return <RawSitemapView endpoint={SEO_FILE_MAP[slug]} />;
+  if (slug && RESERVED_PATHS.has(slug)) return null;
 
   if (!costume) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-          <div className="w-24 h-24 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center shadow-inner">
-            <span className="text-4xl">🎭</span>
-          </div>
-          <h1 className="text-gray-900 text-3xl mb-4" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
-            Costume Not Found
-          </h1>
-          <p className="text-gray-400 mb-8">This costume seems to have vanished into thin air.</p>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-[#1a237e] to-[#3949ab] text-white rounded-2xl shadow-lg shadow-[#1a237e]/20 hover:-translate-y-0.5 transition-all"
-          >
-            &larr; Back to Home
-          </Link>
-        </motion.div>
+        <h1 className="text-gray-900 text-3xl mb-4" style={display}>Costume not found</h1>
+        <p className="text-gray-500 mb-8">We couldn't find that guide.</p>
+        <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a237e] text-white rounded-xl">&larr; Back to home</Link>
       </div>
     );
   }
 
-  const related = getCostumesByCategory(costume.category)
-    .filter((c) => c.slug !== costume.slug)
-    .slice(0, 4);
+  const name = anchorName(costume);
+  const hub = hubFor(costume.category);
+  const hubLabel = hub ? hub.h1.split(":")[0] : costume.category;
+  const related = relatedGuides(costume, costumes, 6);
+  const siblings = related.filter((r) => r.category === costume.category && r.handwritten).slice(0, 5);
 
-  const charName = costume.characterName ?? costume.title
-    .replace(/\s*(Costume|Cosplay|Diy|Halloween|Outfits?|Dress|Suit|Plus Size|For Cosplay|Best|Sexy|Dance)\s*/gi, " ")
-    .trim()
-    .replace(/\s+/g, " ");
+  const scraped = getScrapedItems(costume.slug);
+  const tidied = scraped ? tidyProductList(scraped) : [];
+  const items: ProductLink[] =
+    costume.curatedItems ?? (tidied.length > 0 ? tidied : costume.items.map((it) => ({ name: it.name, url: it.amazonUrl })));
 
-  // Use scraped items if available, otherwise fall back to generated ones
-  // Hand-written guides have a curated list; otherwise use the products
-  // scraped from the original post, falling back to generated search links.
-  const scrapedItems = getScrapedItems(costume.slug);
-  const tidiedScraped = scrapedItems ? tidyProductList(scrapedItems) : [];
-  const displayItems: ProductLink[] = costume.curatedItems
-    ?? (tidiedScraped.length > 0
-      ? tidiedScraped
-      : costume.items.map((item) => ({ name: item.name, url: item.amazonUrl })));
+  const intro = costume.introSection.split("\n\n");
+  const external = getExternalLinks(costume.slug, costume.category);
+  const words = [costume.introSection, costume.aboutSection, ...costume.faqs.map((f) => f.answer), ...items.map((i) => i.note || "")].join(" ").split(/\s+/).length;
+  const minutes = Math.max(2, Math.round(words / 220));
 
-  const itemCount = displayItems.length;
-
-  // Compute authority links
-  const externalLinks = getExternalLinks(costume.slug, costume.category);
-  const internalLinks = getInternalLinks(costume.slug, costume.category);
-  const introLinks = getIntroInternalLinks(costume.slug, costume.category);
+  const toc = [
+    ["shopping-list", "Shopping list"],
+    ["how-to-wear", "How to put it on"],
+    ["about", `About ${name}`],
+    ["faq", "FAQ"],
+    ["related", "Related costumes"],
+  ];
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }}>
-      <ScrollProgress />
-      <BackToTop />
-
-      {/* ═══ HERO BANNER ═══ */}
-      <div className="relative bg-gradient-to-br from-[#070b2e] via-[#111b63] to-[#1a237e] overflow-hidden">
-        {/* Animated blobs */}
-        <div className="absolute inset-0">
-          <motion.div
-            animate={{ x: [0, 20, 0], y: [0, -15, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-0 right-[20%] w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[130px]"
-          />
-          <motion.div
-            animate={{ x: [0, -25, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-0 left-[10%] w-[350px] h-[350px] bg-[#FF9900]/10 rounded-full blur-[110px]"
-          />
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="bg-[#fafbff]">
+      {/* ═══ HEADER ═══ */}
+      <header className="bg-gradient-to-br from-[#070b2e] via-[#111b63] to-[#1a237e] text-white">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8 pt-8 pb-10">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-white/50 mb-6 min-w-0">
+            <Link to="/" className="hover:text-white shrink-0">Home</Link>
+            <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+            <Link to={categoryPath(costume.category)} className="hover:text-white truncate">{hubLabel}</Link>
+          </nav>
+          <h1 className="text-3xl md:text-[2.6rem] leading-[1.12] max-w-4xl" style={display}>{costume.h1Title}</h1>
+          <p className="mt-4 text-sm text-white/60">
+            By the CostumesPlanet editors · Updated <time dateTime={costume.dateModified}>{fmt(costume.dateModified)}</time> · {minutes} min read
+          </p>
         </div>
+      </header>
 
-        <div className="relative max-w-5xl mx-auto px-4 lg:px-8 py-14 lg:py-20">
-          {/* Breadcrumb */}
-          <motion.nav
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-sm text-white/30 mb-8"
-          >
-            <Link to="/" className="hover:text-white/60 transition-colors">Home</Link>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <Link to={`/category/${encodeURIComponent(costume.category)}`} className="hover:text-white/60 transition-colors">
-              {costume.category}
-            </Link>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-white/50 truncate max-w-[200px]">{costume.title}</span>
-          </motion.nav>
+      <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8 lg:py-10 grid lg:grid-cols-[minmax(0,1fr)_300px] gap-10">
+        <article className="min-w-0">
+          {/* ═══ QUICK ANSWER ═══ */}
+          <section id="quick-answer" className="bg-white rounded-2xl border border-gray-200 border-l-4 border-l-[#FF9900] p-6 md:p-7 shadow-sm">
+            <p className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#FF9900] mb-3" style={{ fontWeight: 800 }}>
+              <Zap className="w-4 h-4" /> Quick answer
+            </p>
+            <p className="text-gray-900 text-[1.05rem] leading-relaxed" style={{ fontWeight: 500 }}>{intro[0]}</p>
+            {costume.quickFacts && costume.quickFacts.length > 0 && (
+              <dl className="mt-5 grid sm:grid-cols-2 gap-x-6 gap-y-3 border-t border-gray-100 pt-5">
+                {costume.quickFacts.map((f) => (
+                  <div key={f.label}>
+                    <dt className="text-xs text-gray-400">{f.label}</dt>
+                    <dd className="text-gray-800 text-sm" style={{ fontWeight: 600 }}>{f.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            <a href="#shopping-list" className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1a237e] text-white text-sm hover:bg-[#283593]" style={{ fontWeight: 600 }}>
+              <ShoppingCart className="w-4 h-4" /> See the {items.length}-piece shopping list
+            </a>
+          </section>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.7 }}
-            className="text-3xl md:text-4xl lg:text-[2.8rem] text-white leading-[1.15] mb-6 max-w-3xl"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-          >
-            {costume.h1Title}
-          </motion.h1>
+          {/* ═══ HERO IMAGE ═══ */}
+          <figure className="mt-8 rounded-2xl overflow-hidden border border-gray-100 bg-[#0b1240]">
+            <CostumeImage slug={costume.slug} alt={`${name} costume: what you need`} className="w-full aspect-[1200/630]" priority />
+          </figure>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
-            className="flex flex-wrap items-center gap-3"
-          >
-            <span className="px-4 py-1.5 bg-white/[0.07] backdrop-blur-sm text-white/70 rounded-full text-xs border border-white/[0.06]" style={{ fontWeight: 500 }}>
-              {costume.category}
-            </span>
-            <span className="text-white/30 text-sm">Updated {new Date(costume.dateModified).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-            <span className="text-white/20">&middot;</span>
-            <span className="flex items-center gap-1.5 text-[#FF9900]/80 text-sm">
-              <ShoppingCart className="w-3.5 h-3.5" />
-              {itemCount} items
-            </span>
-          </motion.div>
-        </div>
+          {/* ═══ INTRO ═══ */}
+          {intro.length > 1 && (
+            <div className="mt-8 space-y-5">
+              {intro.slice(1).map((p, i) => (
+                <p key={i} className="text-gray-700 leading-[1.85] text-[1.02rem]">{p}</p>
+              ))}
+            </div>
+          )}
 
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#fafbff] to-transparent" />
+          {/* ═══ SHOPPING LIST ═══ */}
+          <section className="mt-12">
+            <H2 id="shopping-list" icon={ShoppingCart}>{name} costume shopping list</H2>
+            <ol className="space-y-3">
+              {items.map((item, i) => (
+                <li key={i} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 md:p-5 bg-white rounded-2xl border border-gray-100 hover:border-[#FF9900]/40 transition-colors">
+                  <div className="flex gap-4 flex-1 min-w-0">
+                    <span className="w-9 h-9 rounded-lg bg-[#FF9900]/10 text-[#c26f00] flex items-center justify-center shrink-0 text-sm" style={display}>
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-gray-900" style={{ fontWeight: 700 }}>{item.name}</p>
+                      {item.note && <p className="text-sm text-gray-600 mt-1 leading-relaxed">{item.note}</p>}
+                      {i === 0 && costume.handwritten && (
+                        <p className="mt-2 inline-flex items-center gap-1 text-xs text-green-700 bg-green-50 rounded-md px-2 py-0.5" style={{ fontWeight: 600 }}>
+                          <Check className="w-3 h-3" /> Fastest complete option
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="sm:shrink-0 pl-13 sm:pl-0">
+                    <AmazonButton url={item.url} name={item.name} />
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 text-xs text-gray-400">As an Amazon Associate we earn from qualifying purchases. Links open Amazon results for the piece described.</p>
+          </section>
+
+          {/* ═══ HOW TO WEAR ═══ */}
+          <section className="mt-14">
+            <H2 id="how-to-wear" icon={BookOpen}>How to put on a {name} costume</H2>
+            <ol className="space-y-4">
+              {costume.dressingGuide.map((section, i) => (
+                <li key={i} className="bg-white rounded-2xl border border-gray-100 p-5 md:p-6">
+                  <h3 className="text-gray-900 mb-3 flex items-center gap-3" style={{ fontWeight: 700 }}>
+                    <span className="text-xs px-2 py-1 rounded-md bg-[#1a237e] text-white">Step {i + 1}</span>
+                    {section.itemName}
+                  </h3>
+                  <ul className="space-y-2">
+                    {section.steps.map((step, j) => (
+                      <li key={j} className="flex gap-3 text-gray-700 leading-relaxed">
+                        <Check className="w-4 h-4 text-[#FF9900] shrink-0 mt-1" />
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {/* ═══ ABOUT ═══ */}
+          <section className="mt-14">
+            <H2 id="about" icon={Users}>About {name}</H2>
+            <div className="space-y-5">
+              {costume.aboutSection.split("\n\n").map((p, i) => (
+                <p key={i} className="text-gray-700 leading-[1.85]">{p}</p>
+              ))}
+            </div>
+          </section>
+
+          {/* ═══ FAQ (always visible; matches FAQPage schema) ═══ */}
+          <section className="mt-14">
+            <H2 id="faq" icon={HelpCircle}>{name} costume FAQ</H2>
+            <div className="divide-y divide-gray-100 bg-white rounded-2xl border border-gray-100">
+              {costume.faqs.map((f, i) => (
+                <div key={i} className="p-5 md:p-6">
+                  <h3 className="text-gray-900 mb-2" style={{ fontWeight: 700 }}>{f.question}</h3>
+                  <p className="text-gray-600 leading-relaxed">{f.answer}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ═══ SOURCES ═══ */}
+          {external.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-sm uppercase tracking-wider text-gray-400 mb-3" style={{ fontWeight: 700 }}>Sources</h2>
+              <ul className="flex flex-wrap gap-2">
+                {external.map((l, i) => (
+                  <li key={i}>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg px-3 py-1.5 hover:text-[#1a237e]">
+                      {l.label} <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </article>
+
+        {/* ═══ SIDEBAR ═══ */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-24 space-y-5">
+            <nav aria-label="On this page" className="bg-white rounded-2xl border border-gray-100 p-5">
+              <p className="flex items-center gap-2 text-xs uppercase tracking-wider text-gray-400 mb-3" style={{ fontWeight: 700 }}>
+                <ListChecks className="w-4 h-4" /> On this page
+              </p>
+              <ul className="space-y-2 text-sm">
+                {toc.map(([id, label]) => (
+                  <li key={id}>
+                    <a href={`#${id}`} className="text-gray-600 hover:text-[#1a237e]">{label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            {items[0] && (
+              <div className="bg-[#111b63] text-white rounded-2xl p-5">
+                <p className="text-xs uppercase tracking-wider text-[#FF9900] mb-2" style={{ fontWeight: 800 }}>Short on time?</p>
+                <p className="text-sm text-white/80 mb-4">{items[0].name}</p>
+                <AmazonButton url={items[0].url} name={items[0].name} />
+              </div>
+            )}
+            {siblings.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+                <p className="flex items-center gap-2 text-xs uppercase tracking-wider text-gray-400 mb-3" style={{ fontWeight: 700 }}>
+                  <Layers className="w-4 h-4" /> More from {hub?.name ?? costume.category}
+                </p>
+                <ul className="space-y-2 text-sm">
+                  {siblings.map((s) => (
+                    <li key={s.slug}>
+                      <Link to={`/${s.slug}/`} className="text-gray-700 hover:text-[#1a237e]">{anchorName(s)} costume</Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link to={categoryPath(costume.category)} className="mt-4 inline-flex items-center gap-1 text-sm text-[#1a237e]" style={{ fontWeight: 600 }}>
+                  All {hubLabel} <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
+          </div>
+        </aside>
       </div>
 
-      <article className="max-w-5xl mx-auto px-4 lg:px-8 py-10">
-        {/* ═══ IMAGE + PRODUCT TABLE ═══ */}
-        <Reveal>
-          <div className="flex flex-col lg:flex-row gap-10 mb-20">
-            {/* Image */}
-            <div className="lg:w-[45%]">
-              <div className="sticky top-24">
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-xl shadow-gray-200/40"
-                >
-                  <div className="bg-gray-50/50 p-4 md:p-6">
-                    <CostumeImage
-                      slug={costume.slug}
-                      alt={`${charName} costume`}
-                      className="w-full aspect-[3/4] rounded-2xl bg-white"
-                      objectFit="contain"
-                      priority
-                    />
-                  </div>
-                  <div className="p-4 md:p-6 pt-0">
-                    <p className="text-center text-sm text-gray-400 mt-4">{charName} Costume</p>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Products */}
-            <div className="lg:w-[55%]">
-              <SectionHeader icon={ShoppingCart} title="What You'll Need" accent />
-              <div className="space-y-3">
-                {displayItems.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.07, duration: 0.5 }}
-                    whileHover={{ x: 4 }}
-                    className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 md:p-5 bg-white rounded-2xl border border-gray-100 hover:border-[#FF9900]/25 hover:shadow-lg hover:shadow-[#FF9900]/5 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF9900]/10 to-[#FF9900]/5 flex items-center justify-center shrink-0">
-                        <span className="text-[#FF9900] text-sm" style={{ fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-gray-800 text-sm" style={{ fontWeight: 600 }}>{item.name}</p>
-                        {item.note && <p className="text-xs text-gray-500 mt-1 leading-relaxed">{item.note}</p>}
-                        <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                          <Check className="w-3 h-3 text-green-500" />
-                          {/amazon\.com\/dp\/[A-Z0-9]{10}/i.test(item.url) ? "Direct Amazon Link" : "Amazon Search"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="sm:shrink-0 pl-14 sm:pl-0">
-                      <AmazonButton url={item.url} name={item.name} />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+      {/* ═══ RELATED ═══ */}
+      {related.length > 0 && (
+        <section className="bg-white border-t border-gray-100">
+          <div className="max-w-6xl mx-auto px-4 lg:px-8 py-12">
+            <h2 id="related" className="scroll-mt-24 text-2xl text-gray-900 mb-2" style={display}>Related costume guides</h2>
+            <p className="text-gray-500 mb-8">
+              More from{" "}
+              <Link to={categoryPath(costume.category)} className="text-[#1a237e] hover:underline" style={{ fontWeight: 600 }}>{hubLabel}</Link>{" "}
+              and similar franchises.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {related.map((r) => (
+                <BlogCard key={r.slug} costume={r} />
+              ))}
             </div>
           </div>
-        </Reveal>
-
-        {/* ═══ INTRO ═══ */}
-        <Reveal>
-          <section className="mb-20">
-            <div className="relative bg-gradient-to-br from-[#1a237e]/[0.03] via-[#3949ab]/[0.04] to-[#FF9900]/[0.02] rounded-[2rem] p-8 lg:p-12 overflow-hidden">
-              {/* Decorative dots */}
-              <div className="absolute top-6 right-6 flex gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-[#1a237e]/10" />
-                <div className="w-2 h-2 rounded-full bg-[#1a237e]/15" />
-                <div className="w-2 h-2 rounded-full bg-[#1a237e]/20" />
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-10">
-                <div className="md:w-3/5">
-                  <h2
-                    className="text-2xl md:text-3xl text-gray-900 mb-6 leading-snug"
-                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-                  >
-                    Bring{" "}
-                    <span className="bg-gradient-to-r from-[#1a237e] to-[#3949ab] bg-clip-text text-transparent">
-                      {charName}
-                    </span>{" "}
-                    to Life
-                  </h2>
-                  {costume.introSection.split("\n\n").map((para, i) => (
-                    <p key={i} className="text-gray-500 leading-[1.85] mb-5">{para}</p>
-                  ))}
-                  {/* Natural internal cross-links */}
-                  {introLinks.length > 0 && (
-                    <p className="text-gray-500 leading-[1.85] mt-5">
-                      {introLinks.map((seg, i) =>
-                        seg.linkSlug ? (
-                          <Link
-                            key={i}
-                            to={`/${seg.linkSlug}`}
-                            className="text-[#1a237e] hover:text-[#3949ab] underline decoration-[#1a237e]/20 hover:decoration-[#1a237e]/50 transition-colors"
-                            style={{ fontWeight: 500 }}
-                          >
-                            {seg.text}
-                          </Link>
-                        ) : (
-                          <span key={i}>{seg.text}</span>
-                        )
-                      )}
-                    </p>
-                  )}
-                </div>
-                <div className="md:w-2/5">
-                  <motion.div whileHover={{ scale: 1.02, rotate: 1 }} transition={{ type: "spring" }}>
-                    <div className="bg-gray-50/50 rounded-2xl p-3">
-                      <CostumeImage
-                        slug={costume.slug}
-                        alt={`${charName} costume reference`}
-                        className="w-full aspect-[4/5] rounded-xl bg-white"
-                        objectFit="contain"
-                      />
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </Reveal>
-
-        {/* ═══ TIMELINE DRESSING GUIDE ═══ */}
-        <Reveal>
-          <section className="mb-20">
-            <SectionHeader icon={BookOpen} title={`${charName} Dressing Guide`} />
-            <p className="text-gray-400 mb-10 max-w-2xl leading-relaxed">
-              Follow this step-by-step guide to achieve the perfect {charName} look. Each step builds on the last.
-            </p>
-
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-[23px] top-6 bottom-6 w-[2px] bg-gradient-to-b from-[#1a237e] via-[#3949ab] to-[#1a237e]/20 hidden md:block" />
-
-              <div className="space-y-6">
-                {costume.dressingGuide.map((section, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.08, duration: 0.5 }}
-                    className="relative flex gap-6"
-                  >
-                    {/* Timeline dot */}
-                    <div className="hidden md:flex flex-col items-center shrink-0">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1a237e] to-[#3949ab] flex items-center justify-center text-white shadow-lg shadow-[#1a237e]/20 z-10" style={{ fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-6 hover:border-[#1a237e]/15 hover:shadow-lg hover:shadow-[#1a237e]/3 transition-all duration-300 group">
-                      <div className="flex items-center gap-3 mb-5">
-                        <span className="md:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-[#1a237e] to-[#3949ab] flex items-center justify-center text-white text-xs" style={{ fontWeight: 700 }}>
-                          {i + 1}
-                        </span>
-                        <h3 className="text-gray-900" style={{ fontWeight: 700 }}>
-                          {section.itemName}
-                        </h3>
-                      </div>
-                      <div className="space-y-3 md:pl-0">
-                        {section.steps.map((step, j) => (
-                          <div key={j} className="flex items-start gap-3">
-                            <div className="w-6 h-6 rounded-full bg-[#1a237e]/5 flex items-center justify-center text-[#1a237e] shrink-0 mt-0.5">
-                              <Check className="w-3 h-3" />
-                            </div>
-                            <p className="text-gray-500 text-sm leading-relaxed">{step}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </Reveal>
-
-        {/* ═══ ABOUT ═══ */}
-        <Reveal>
-          <section className="mb-20">
-            <SectionHeader icon={Users} title={`About ${charName}`} />
-            <div className="bg-white rounded-3xl border border-gray-100 p-8 lg:p-10 shadow-sm">
-              {costume.aboutSection.split("\n\n").map((para, i) => (
-                <p key={i} className="text-gray-500 leading-[1.85] mb-5 last:mb-0">{para}</p>
-              ))}
-            </div>
-          </section>
-        </Reveal>
-
-        {/* ═══ AT A GLANCE (hand-written guides only) ═══ */}
-        {costume.quickFacts && costume.quickFacts.length > 0 && (
-          <Reveal>
-            <section className="mb-20">
-              <SectionHeader icon={Award} title="At a Glance" accent />
-              <div className="grid sm:grid-cols-2 gap-4">
-                {costume.quickFacts.map((fact) => (
-                  <div key={fact.label} className="bg-white rounded-xl p-5 border border-gray-100">
-                    <p className="text-xs text-gray-400 mb-1">{fact.label}</p>
-                    <p className="text-gray-800" style={{ fontWeight: 600 }}>{fact.value}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </Reveal>
-        )}
-
-        {/* ═══ FAQ ═══ */}
-        <Reveal>
-          <section className="mb-20">
-            <SectionHeader icon={HelpCircle} title="Frequently Asked Questions" />
-            <div className="space-y-3">
-              {costume.faqs.map((faq, i) => (
-                <FAQItem key={`faq-${i}`} question={faq.question} answer={faq.answer} index={i} />
-              ))}
-            </div>
-          </section>
-        </Reveal>
-
-        {/* ═══ SOURCES & FURTHER READING ═══ */}
-        <Reveal>
-          <section className="mb-20">
-            <SectionHeader icon={BookMarked} title="Sources & Further Reading" />
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* External authority links */}
-              {externalLinks.length > 0 && (
-                <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Globe className="w-4 h-4 text-[#1a237e]" />
-                    <h3 className="text-sm text-gray-800" style={{ fontWeight: 700 }}>Reference Sources</h3>
-                  </div>
-                  <p className="text-xs text-gray-400 mb-4 leading-relaxed">
-                    Background on {charName} and the source material.
-                  </p>
-                  <div className="space-y-2.5">
-                    {externalLinks.map((link, i) => (
-                      <a
-                        key={i}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-colors group"
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 group-hover:bg-white flex items-center justify-center shrink-0 border border-gray-100">
-                          {link.type === "wikipedia" && <span className="text-sm">W</span>}
-                          {link.type === "imdb" && <span className="text-[10px]" style={{ fontWeight: 700, color: "#F5C518" }}>IMDb</span>}
-                          {link.type === "fandom" && <span className="text-sm">📖</span>}
-                          {link.type === "reddit" && <span className="text-sm">💬</span>}
-                          {link.type === "official" && <span className="text-sm">🔗</span>}
-                          {link.type === "reference" && <span className="text-sm">📚</span>}
-                          {link.type === "youtube" && <span className="text-sm">▶</span>}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm text-gray-700 group-hover:text-[#1a237e] transition-colors truncate" style={{ fontWeight: 500 }}>
-                            {link.label}
-                          </p>
-                          <p className="text-[10px] text-gray-300 truncate">{link.url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0]}</p>
-                        </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#1a237e] transition-colors shrink-0" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Internal related guides */}
-              {internalLinks.length > 0 && (
-                <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Link2 className="w-4 h-4 text-[#FF9900]" />
-                    <h3 className="text-sm text-gray-800" style={{ fontWeight: 700 }}>More Costume Guides</h3>
-                  </div>
-                  <p className="text-xs text-gray-400 mb-4 leading-relaxed">
-                    More costume guides you might find useful.
-                  </p>
-                  <div className="space-y-2.5">
-                    {internalLinks.map((iLink, i) => (
-                      <Link
-                        key={i}
-                        to={`/${iLink.slug}`}
-                        className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#1a237e]/[0.03] transition-colors group"
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1a237e]/5 to-[#3949ab]/5 flex items-center justify-center shrink-0">
-                          <span className="text-[#1a237e] text-xs" style={{ fontWeight: 700 }}>{String(i + 1).padStart(2, "0")}</span>
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm text-gray-700 group-hover:text-[#1a237e] transition-colors truncate" style={{ fontWeight: 500 }}>
-                            {iLink.title}
-                          </p>
-                          <p className="text-[10px] text-gray-300">{iLink.anchor}</p>
-                        </div>
-                        <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#1a237e] transition-colors shrink-0" />
-                      </Link>
-                    ))}
-                  </div>
-                  {/* Category hub link */}
-                  <div className="mt-4 pt-4 border-t border-gray-50">
-                    <Link
-                      to={`/category/${encodeURIComponent(costume.category)}`}
-                      className="flex items-center gap-2 text-sm text-[#1a237e] hover:text-[#3949ab] transition-colors"
-                      style={{ fontWeight: 600 }}
-                    >
-                      Browse all {costume.category} costumes
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        </Reveal>
-
-        {/* ═══ RELATED ═══ */}
-        {related.length > 0 && (
-          <Reveal>
-            <section className="mb-12">
-              <SectionHeader icon={Sparkles} title="You Might Also Like" accent />
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {related.map((r, i) => (
-                  <Reveal key={r.slug} delay={i * 0.08}>
-                    <BlogCard costume={r} />
-                  </Reveal>
-                ))}
-              </div>
-            </section>
-          </Reveal>
-        )}
-      </article>
+        </section>
+      )}
     </div>
   );
 }

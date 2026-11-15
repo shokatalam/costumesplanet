@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { categoryPath, isIndexable } from "../data/site";
 import { Link, useNavigate } from "react-router";
 import { Search, ArrowRight, Sparkles, TrendingUp, Star, ChevronLeft, ChevronRight, Zap, Wand2 } from "lucide-react";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
@@ -76,10 +77,14 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   );
 }
 
+// Hand-written guides, most recently updated first. Template guides stay out
+// of the homepage so link equity flows to the pages we want ranked.
+const guides = costumes.filter(isIndexable).sort((a, b) => b.dateModified.localeCompare(a.dateModified));
+
 // ── Trending horizontal scroll ──
 function TrendingCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const trending = costumes.slice(0, 12);
+  const trending = guides.slice(0, 12);
 
   const scroll = (dir: number) => {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
@@ -127,15 +132,15 @@ function TrendingCarousel() {
 
 export function HomePage() {
   useDocumentMeta({
-    title: "CostumesPlanet — Costume & Cosplay Guides for Every Character",
-    description: "Costume and cosplay guides for 240+ characters, organised by franchise: Marvel & DC, Game of Thrones, Star Wars, Disney, anime, gaming and more.",
+    title: "Costume Guides for Every Character: What to Buy & How to Wear It | CostumesPlanet",
+    description: `${guides.length} hand-written costume and cosplay guides: the exact pieces for each character, the fastest complete option, budgets and how to put it on.`,
   });
 
   const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
   const [builderInput, setBuilderInput] = useState("");
   const navigate = useNavigate();
-  const featured = costumes.slice(0, 6);
-  const allPosts = costumes.slice(6);
+  const featured = guides.slice(12, 18);
+  const allPosts = guides.slice(18);
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 600], [0, 120]);
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
@@ -214,7 +219,7 @@ export function HomePage() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.07] backdrop-blur-md border border-white/[0.08] text-white/70 text-xs mb-8"
             >
               <span className="w-2 h-2 rounded-full bg-[#FF9900] animate-pulse" />
-              <span>{costumes.length}+ Costume Guides &middot; Updated Daily</span>
+              <span>{guides.length} hand-written costume guides</span>
             </motion.div>
 
             {/* Headline */}
@@ -367,7 +372,7 @@ export function HomePage() {
           <div className="flex items-center gap-3 mb-8">
             <div className="w-1.5 h-9 rounded-full bg-gradient-to-b from-[#FF9900] to-[#ffb84d]" />
             <h2 className="text-2xl text-gray-900" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
-              Trending Now
+              Latest Guides
             </h2>
             <Zap className="w-5 h-5 text-[#FF9900]" />
           </div>
@@ -392,7 +397,7 @@ export function HomePage() {
             return (
               <Reveal key={cat} delay={i * 0.04}>
                 <Link
-                  to={`/category/${encodeURIComponent(cat)}`}
+                  to={categoryPath(cat)}
                   className="group relative flex flex-col items-center gap-2 px-4 py-6 bg-white rounded-2xl border border-gray-100 hover:border-[#1a237e]/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#1a237e]/5 overflow-hidden"
                 >
                   {/* Hover gradient */}
@@ -413,7 +418,7 @@ export function HomePage() {
           <div className="flex items-center gap-3 mb-8">
             <div className="w-1.5 h-9 rounded-full bg-gradient-to-b from-[#FF9900] to-[#ffb84d]" />
             <h2 className="text-2xl text-gray-900" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
-              Editor's Picks
+              More Popular Guides
             </h2>
             <span className="px-3 py-1 bg-[#FF9900]/10 text-[#e68a00] rounded-full text-[11px] uppercase tracking-wider" style={{ fontWeight: 600 }}>
               Curated

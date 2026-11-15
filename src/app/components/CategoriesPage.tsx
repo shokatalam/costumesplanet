@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { categoryPath } from "../data/site";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
@@ -40,7 +41,7 @@ function CategoryCard({ cat, index }: { cat: string; index: number }) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
     >
       <Link
-        to={`/category/${encodeURIComponent(cat)}`}
+        to={categoryPath(cat)}
         className="group block bg-white rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#1a237e]/8"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}

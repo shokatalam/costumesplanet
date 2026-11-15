@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router";
+import { categoryPath } from "../data/site";
 import { Search, Menu, X, Sparkles, ChevronRight, Heart, Wand2 } from "lucide-react";
 import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "motion/react";
@@ -35,12 +36,12 @@ const SiteLogo = ({ variant = "light" }: { variant?: "light" | "dark" }) => {
 const navLinks = [
   { label: "Home", to: "/", emoji: "🏠" },
   { label: "Build Costume", to: "/build", emoji: "✨" },
-  { label: "Marvel & DC", to: "/category/Marvel%20%26%20DC", emoji: "🦸" },
-  { label: "Game of Thrones", to: "/category/Game%20of%20Thrones", emoji: "🐉" },
-  { label: "Star Wars", to: "/category/Star%20Wars", emoji: "⚔️" },
-  { label: "Disney", to: "/category/Disney", emoji: "🏰" },
-  { label: "Anime", to: "/category/Anime", emoji: "🎌" },
-  { label: "Gaming", to: "/category/Gaming", emoji: "🎮" },
+  { label: "Marvel & DC", to: "/category/marvel-dc/", emoji: "🦸" },
+  { label: "Game of Thrones", to: "/category/game-of-thrones/", emoji: "🐉" },
+  { label: "Star Wars", to: "/category/star-wars/", emoji: "⚔️" },
+  { label: "Disney", to: "/category/disney/", emoji: "🏰" },
+  { label: "Anime", to: "/category/anime/", emoji: "🎌" },
+  { label: "Gaming", to: "/category/gaming/", emoji: "🎮" },
 ];
 
 export function Layout() {
@@ -229,7 +230,7 @@ export function Layout() {
                     {categories.map((cat) => (
                       <Link
                         key={cat}
-                        to={`/category/${encodeURIComponent(cat)}`}
+                        to={categoryPath(cat)}
                         className="px-3 py-2 text-xs text-gray-600 bg-gray-50 hover:bg-[#1a237e]/5 hover:text-[#1a237e] rounded-xl transition-colors"
                       >
                         {cat}
@@ -291,7 +292,7 @@ export function Layout() {
                 {categories.map((cat) => (
                   <Link
                     key={cat}
-                    to={`/category/${encodeURIComponent(cat)}`}
+                    to={categoryPath(cat)}
                     className="text-white/35 hover:text-[#FF9900] text-sm transition-colors duration-300"
                   >
                     {cat}

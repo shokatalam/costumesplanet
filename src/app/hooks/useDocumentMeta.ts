@@ -12,10 +12,12 @@ export function useDocumentMeta({
   title,
   description,
   canonical,
+  robots: robotsContent = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
 }: {
   title: string;
   description: string;
   canonical?: string;
+  robots?: string;
 }) {
   useEffect(() => {
     // ── Title ──
@@ -78,7 +80,7 @@ export function useDocumentMeta({
       robots.name = "robots";
       document.head.appendChild(robots);
     }
-    robots.setAttribute("content", "index, follow, max-image-preview:large, max-snippet:-1");
+    robots.setAttribute("content", robotsContent);
 
     return () => {
       // Restore to our own default — never let the platform title leak through
@@ -86,5 +88,5 @@ export function useDocumentMeta({
       if (metaDesc) metaDesc.setAttribute("content", DEFAULT_DESC);
       if (canonicalEl && canonical) canonicalEl.setAttribute("href", "");
     };
-  }, [title, description, canonical]);
+  }, [title, description, canonical, robotsContent]);
 }
